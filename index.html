@@ -3,89 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MAKAR | Official Space</title>
+    <title>AMAKAR.TECH</title>
     <style>
-        body {
-            margin: 0;
-            padding: 0;
-            background-color: #0a0a0a;
-            color: #ffffff;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            overflow: hidden;
+        :root { --bg: #050505; --card: #121212; --text: #eee; }
+        body { background: var(--bg); color: var(--text); font-family: sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+        .grid { 
+            display: grid; 
+            grid-template-columns: repeat(3, 1fr); 
+            grid-auto-rows: 150px; 
+            gap: 15px; 
+            width: 90%; max-width: 800px; 
         }
-
-        .container {
-            text-align: center;
-            z-index: 1;
+        .item { 
+            background: var(--card); border-radius: 20px; border: 1px solid #222; 
+            padding: 20px; display: flex; flex-direction: column; justify-content: center;
+            transition: 0.3s; cursor: pointer;
         }
-
-        h1 {
-            font-size: 5rem;
-            font-weight: 900;
-            margin-bottom: 10px;
-            background: linear-gradient(90deg, #ff00cc, #3333ff);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            letter-spacing: -2px;
-        }
-
-        p {
-            font-size: 1.2rem;
-            color: #888;
-            margin-bottom: 30px;
-        }
-
-        .links {
-            display: flex;
-            gap: 20px;
-            justify-content: center;
-        }
-
-        .btn {
-            padding: 12px 30px;
-            border: 1px solid #333;
-            border-radius: 50px;
-            text-decoration: none;
-            color: white;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            background: rgba(255, 255, 255, 0.05);
-        }
-
-        .btn:hover {
-            background: #ffffff;
-            color: #000000;
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(255, 255, 255, 0.1);
-        }
-
-        /* Анимированный фон */
-        .bg-glow {
-            position: absolute;
-            width: 300px;
-            height: 300px;
-            background: radial-gradient(circle, rgba(51, 51, 255, 0.2) 0%, rgba(0,0,0,0) 70%);
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            filter: blur(50px);
-            z-index: 0;
-        }
+        .item:hover { border-color: #555; transform: scale(1.02); }
+        .large { grid-column: span 2; grid-row: span 2; background: linear-gradient(45deg, #1e1e1e, #111); }
+        .tall { grid-row: span 2; }
+        h1 { margin: 0; font-size: 3rem; letter-spacing: -2px; }
+        p { color: #888; }
+        .social { font-weight: bold; color: #007aff; }
     </style>
 </head>
 <body>
-    <div class="bg-glow"></div>
-    <div class="container">
-        <h1>MAKAR</h1>
-        <p>This domain is officially taken.</p>
-        <div class="links">
-            <a href="#" class="btn">Telegram</a>
-            <a href="#" class="btn">Projects</a>
-            <a href="#" class="btn">Memes</a>
+    <div class="grid">
+        <div class="item large">
+            <h1>MAKAR A.</h1>
+            <p>14 y.o. Developer & Creator</p>
+        </div>
+        <div class="item">
+            <span class="social">Telegram</span>
+        </div>
+        <div class="item tall">
+            <p>PROJECTS</p>
+            <div style="font-size: 40px;">🚀</div>
+        </div>
+        <div class="item">
+            <span class="social">Steam</span>
+        </div>
+        <div class="item">
+            <p style="font-size: 12px;">STATUS</p>
+            <p>Working on something cool...</p>
         </div>
     </div>
 </body>
