@@ -13,7 +13,7 @@
             --md-bg: #0a0c10;
             --md-surface: rgba(26, 28, 34, 0.75);
             --md-primary: #a8c7fa;        
-            --md-track: #43474e;          
+            --md-track: rgba(67, 71, 78, 0.4);          
             --md-on-primary: #062e6f;
             --md-text: #e2e2e9;
             --md-text-variant: #c4c6d0;
@@ -69,61 +69,59 @@
         p {
             font-size: 1.1rem;
             color: var(--md-text-variant);
-            margin: 0 0 24px 0;
+            margin: 0 0 32px 0;
         }
 
-        /* --- НОВЫЙ MATERIAL YOU PROGRESS INDICATOR (M3) --- */
-        .m3-progress-container {
-            margin-bottom: 32px;
-            position: relative;
-            width: 48px;
-            height: 48px;
-        }
-
-        .m3-progress-svg {
-            /* Базовое вращение по кругу */
-            animation: m3-rotate 1.4s linear infinite;
+        /* --- MATERIAL YOU WAVY PROGRESS INDICATOR --- */
+        .m3-wavy-container {
             width: 100%;
-            height: 100%;
-            transform-origin: center;
+            max-width: 200px;
+            height: 20px;
+            margin-bottom: 32px;
+            overflow: hidden;
+            position: relative;
         }
 
-        .m3-progress-track {
+        .m3-wavy-svg {
+            width: 200%; /* Делаем шире, чтобы бесконечно двигать влево */
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            /* Анимация бегущей волны */
+            animation: m3-wavy-move 1.5s linear infinite;
+        }
+
+        /* Задняя серая дорожка-волна */
+        .wavy-track {
             stroke: var(--md-track);
             stroke-width: 4px;
+            stroke-linecap: round;
         }
 
-        .m3-progress-circle {
+        /* Активная синяя волна прогресса */
+        .wavy-progress {
             stroke: var(--md-primary);
             stroke-width: 4px;
             stroke-linecap: round;
-            /* Динамическое сжатие и растяжение по новым таймингам Google */
-            animation: m3-dash 1.4s ease-in-out infinite;
-            will-change: stroke-dasharray, stroke-dashoffset;
+            /* Штриховка, чтобы создать эффект прерывистого индикатора */
+            stroke-dasharray: 40, 30; 
+            animation: m3-wavy-dash 2s ease-in-out infinite;
         }
 
-        /* Синхронное вращение всей структуры */
-        @keyframes m3-rotate {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(270deg); }
+        /* Движение волны влево-вправо */
+        @keyframes m3-wavy-move {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); } /* Сдвигаем ровно на один повтор паттерна */
         }
 
-        /* Анимация движения дуги: резкие переходы углов */
-        @keyframes m3-dash {
-            0% {
-                stroke-dasharray: 1, 150;
-                stroke-dashoffset: 0;
-            }
-            50% {
-                stroke-dasharray: 90, 150;
-                stroke-dashoffset: -35px;
-            }
-            100% {
-                stroke-dasharray: 90, 150;
-                stroke-dashoffset: -120px;
-            }
+        /* Дополнительное смещение ползунка для хаотичности */
+        @keyframes m3-wavy-dash {
+            0% { stroke-dashoffset: 0; }
+            50% { stroke-dashoffset: -50; }
+            100% { stroke-dashoffset: -140; }
         }
-        /* -------------------------------------------------- */
+        /* ------------------------------------------- */
 
         .m3-button {
             display: inline-flex;
@@ -157,10 +155,10 @@
         <h1>макар</h1>
         <p>здравствуйте</p>
         
-        <div class="m3-progress-container">
-            <svg class="m3-progress-svg" viewBox="0 0 48 48">
-                <circle class="m3-progress-track" cx="24" cy="24" r="18" fill="none"></circle>
-                <circle class="m3-progress-circle" cx="24" cy="24" r="18" fill="none" stroke-dasharray="1, 150" stroke-dashoffset="0"></circle>
+        <div class="m3-wavy-container">
+            <svg class="m3-wavy-svg" viewBox="0 0 400 20" fill="none">
+                <path class="wavy-track" d="M 0 10 Q 20 0, 40 10 T 80 10 T 120 10 T 160 10 T 200 10 T 240 10 T 280 10 T 320 10 T 360 10 T 400 10" />
+                <path class="wavy-progress" d="M 0 10 Q 20 0, 40 10 T 80 10 T 120 10 T 160 10 T 200 10 T 240 10 T 280 10 T 320 10 T 360 10 T 400 10" />
             </svg>
         </div>
 
@@ -168,7 +166,7 @@
     </div>
 
     <script>
-        // Код анимации летающего текста на фоне
+        // Код фонового летающего текста
         const canvas = document.getElementById('canvas-bg');
         const ctx = canvas.getContext('2d');
 
