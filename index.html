@@ -6,10 +6,9 @@
     <title>amakar.tech</title>
     
     <style>
-        /* Подключаем жирный (Bold) Google Sans, который используется в Pixel UI */
+        /* Подключаем жирный Google Sans (Pixel UI Bold) */
         @font-face {
             font-family: 'Google Sans';
-            /* Ссылка на Bold версию (weight 700) */
             src: url('https://fonts.gstatic.com/s/googlesans/v14/4UaerENHsxJLGDuGo1OIlL3OixN0iaFF.woff2') format('woff2');
             font-weight: 700;
             font-style: normal;
@@ -22,6 +21,11 @@
             --md-on-primary: #062e6f;
             --md-text: #e2e2e9;
             --md-text-variant: #c4c6d0;
+            
+            /* Дефолтные значения для морфинга */
+            --morph-radius: 50%;
+            --morph-rotate: 0deg;
+            --morph-scale: 1;
         }
 
         body, html {
@@ -31,7 +35,6 @@
             height: 100%;
             overflow: hidden;
             background-color: var(--md-bg);
-            /* Ставим шрифт жирным по умолчанию для всего сайта */
             font-family: 'Google Sans', system-ui, -apple-system, sans-serif;
             font-weight: 700;
             display: flex;
@@ -39,7 +42,7 @@
             align-items: center;
         }
 
-        /* --- ЭКРАН ЗАГРУЗКИ С РАНДОМНЫМИ ФИГУРАМИ --- */
+        /* --- ЭКРАН ЗАГРУЗКИ (SPLASH SCREEN) --- */
         #splash-screen {
             position: fixed;
             top: 0;
@@ -51,7 +54,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            transition: opacity 0.6s cubic-bezier(0.2, 0, 0, 1), visibility 0.6s;
+            transition: opacity 0.5s cubic-bezier(0.2, 0, 0, 1), visibility 0.5s;
         }
 
         #splash-screen.hidden {
@@ -60,12 +63,17 @@
             pointer-events: none;
         }
 
+        /* Та самая сочная фигура с плавной трансформацией */
         .m3-morphing-shape {
-            width: 80px;
-            height: 80px;
+            width: 85px;
+            height: 85px;
             background-color: var(--md-primary);
-            /* Плавный переход при смене формы и поворота через JS */
-            transition: border-radius 0.4s cubic-bezier(0.4, 0, 0.2, 1), transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: var(--morph-radius);
+            transform: rotate(var(--morph-rotate)) scale(var(--morph-scale));
+            /* cubic-bezier(0.2, 1, 0.2, 1) дает тот самый фирменный пружинящий эффект Google */
+            transition: border-radius 0.6s cubic-bezier(0.2, 1, 0.2, 1), 
+                        transform 0.6s cubic-bezier(0.2, 1, 0.2, 1);
+            will-change: border-radius, transform;
         }
         /* ------------------------------------- */
 
@@ -106,9 +114,173 @@
             font-size: 1.2rem;
             color: var(--md-text-variant);
             margin: 0 0 32px 0;
-            letter-spacing: 0.2px;
         }
 
         .m3-wavy-container {
             width: 200px; 
-            height: 2
+            height: 24px;
+            margin-bottom: 32px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .m3-wavy-svg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 240px; 
+            animation: m3-wavy-loop 1.2s linear infinite;
+        }
+
+        .wavy-path {
+            stroke: var(--md-primary); 
+            stroke-width: 5px;
+            stroke-linecap: round;
+        }
+
+        @keyframes m3-wavy-loop {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-40px); }
+        }
+
+        .m3-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--md-primary);
+            color: var(--md-on-primary);
+            font-size: 1rem;
+            padding: 0 24px;
+            height: 48px;
+            border-radius: 24px;
+            text-decoration: none;
+            transition: background-color 0.2s, transform 0.1s;
+            letter-spacing: 0.5px;
+        }
+
+        .m3-button:hover {
+            background-image: linear-gradient(rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.08));
+        }
+
+        .m3-button:active {
+            transform: scale(0.97);
+        }
+    </style>
+</head>
+<body>
+
+    <div id="splash-screen">
+        <div class="m3-morphing-shape" id="morph-shape"></div>
+    </div>
+
+    <canvas id="canvas-bg"></canvas>
+
+    <div class="m3-card">
+        <h1>макар</h1>
+        <p>здравствуйте</p>
+        
+        <div class="m3-wavy-container">
+            <svg class="m3-wavy-svg" viewBox="0 0 240 24" fill="none">
+                <path class="wavy-path" d="M 0 12 Q 10 2, 20 12 T 40 12 T 60 12 T 80 12 T 100 12 T 120 12 T 140 12 T 160 12 T 180 12 T 200 12 T 220 12 T 240 12" />
+            </svg>
+        </div>
+
+        <a href="https://t.me/tgmakar" class="m3-button">telegram</a>
+    </div>
+
+    <script>
+        // Оригинальные формы Material 3 Shape (Округлости, Листья, Капли)
+        const m3Shapes = [
+            '50%', // Идеальный круг
+            '36px 4px 36px 36px', // Капля влево
+            '4px 36px 36px 36px', // Капля вправо
+            '4px 36px 4px 36px', // Листик
+            '36px 4px 36px 4px', // Обратный листик
+            '40px 40px 8px 8px', // Купол
+            '16px', // Фирменный закругленный квадрат
+            '36px 12px 36px 12px' // Асимметричный овал
+        ];
+
+        const root = document.documentElement;
+        let shapeCount = 0;
+
+        function runMorph() {
+            // Гарантируем, что следующая фигура не совпадет с текущей
+            const randomShape = m3Shapes[Math.floor(Math.random() * m3Shapes.length)];
+            const randomRotation = Math.floor(Math.random() * 140) - 70 + (shapeCount * 90); // Плавное закручивание по ходу движения
+            const randomScale = 0.85 + Math.random() * 0.25; // Слегка дышит в размерах
+
+            root.style.setProperty('--morph-radius', randomShape);
+            root.style.setProperty('--morph-rotate', `${randomRotation}deg`);
+            root.style.setProperty('--morph-scale', randomScale);
+            
+            shapeCount++;
+        }
+
+        // Запускаем цикл морфинга сразу после загрузки скрипта
+        runMorph();
+        const morphInterval = setInterval(runMorph, 450);
+
+        // Ровно через 2 секунды плавно прячем сплеш
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                clearInterval(morphInterval);
+                const splash = document.getElementById('splash-screen');
+                if (splash) splash.classList.add('hidden');
+            }, 2000);
+        });
+
+        // --- ЛЕТАЮЩИЙ ТЕКСТ НА ФОНЕ ---
+        const canvas = document.getElementById('canvas-bg');
+        const ctx = canvas.getContext('2d');
+
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        const phrasesList = ["оооо телеграм", "оооо макар", "о да паша дуров храни телеграм"];
+        const particles = [];
+
+        class TextParticle {
+            constructor() {
+                this.reset();
+                this.y = Math.random() * canvas.height;
+            }
+            reset() {
+                this.text = phrasesList[Math.floor(Math.random() * phrasesList.length)];
+                this.x = Math.random() * canvas.width;
+                this.y = canvas.height + Math.random() * 40;
+                this.speed = 0.4 + Math.random() * 0.7;
+                this.fontSize = 14 + Math.random() * 14;
+                this.opacity = 0.07 + Math.random() * 0.13;
+                this.drift = (Math.random() - 0.5) * 0.2;
+            }
+            update() {
+                this.y -= this.speed;
+                this.x += this.drift;
+                if (this.y < -30) this.reset();
+            }
+            draw() {
+                ctx.fillStyle = `rgba(168, 199, 250, ${this.opacity})`;
+                ctx.font = `bold ${this.fontSize}px 'Google Sans', sans-serif`;
+                ctx.fillText(this.text, this.x, this.y);
+            }
+        }
+
+        for (let i = 0; i < 22; i++) particles.push(new TextParticle());
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => { p.update(); p.draw(); });
+            requestAnimationFrame(animate);
+        }
+        
+        // Запуск холста после первого кадра
+        requestAnimationFrame(animate);
+    </script>
+</body>
+</html>
