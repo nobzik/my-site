@@ -70,7 +70,6 @@
             background-color: var(--md-primary);
             border-radius: var(--morph-radius);
             transform: rotate(var(--morph-rotate)) scale(var(--morph-scale));
-            /* cubic-bezier(0.2, 1, 0.2, 1) дает тот самый фирменный пружинящий эффект Google */
             transition: border-radius 0.6s cubic-bezier(0.2, 1, 0.2, 1), 
                         transform 0.6s cubic-bezier(0.2, 1, 0.2, 1);
             will-change: border-radius, transform;
@@ -190,27 +189,27 @@
     </div>
 
     <script>
-        // Оригинальные формы Material 3 Shape (Округлости, Листья, Капли)
-        const m3Shapes = [
-            '50%', // Идеальный круг
-            '36px 4px 36px 36px', // Капля влево
-            '4px 36px 36px 36px', // Капля вправо
-            '4px 36px 4px 36px', // Листик
-            '36px 4px 36px 4px', // Обратный листик
-            '40px 40px 8px 8px', // Купол
-            '16px', // Фирменный закругленный квадрат
-            '36px 12px 36px 12px' // Асимметричный овал
-        ];
-
+        // --- ГЕНЕРАТОР БЕСКОНЕЧНЫХ ФИГУР MATERIAL 3 ---
         const root = document.documentElement;
         let shapeCount = 0;
 
-        function runMorph() {
-            // Гарантируем, что следующая фигура не совпадет с текущей
-            const randomShape = m3Shapes[Math.floor(Math.random() * m3Shapes.length)];
-            const randomRotation = Math.floor(Math.random() * 140) - 70 + (shapeCount * 90); // Плавное закручивание по ходу движения
-            const randomScale = 0.85 + Math.random() * 0.25; // Слегка дышит в размерах
+        // Базовые варианты радиусов из дизайн-системы Google
+        const cornerOptions = ['4px', '36px', '50%'];
 
+        function runMorph() {
+            // Собираем абсолютно рандомный border-radius для каждого из 4-х углов отдельно
+            const topLeft = cornerOptions[Math.floor(Math.random() * cornerOptions.length)];
+            const topRight = cornerOptions[Math.floor(Math.random() * cornerOptions.length)];
+            const bottomRight = cornerOptions[Math.floor(Math.random() * cornerOptions.length)];
+            const bottomLeft = cornerOptions[Math.floor(Math.random() * cornerOptions.length)];
+            
+            const randomShape = `${topLeft} ${topRight} ${bottomRight} ${bottomLeft}`;
+            
+            // Задаем угол вращения и легкое изменение масштаба для динамики
+            const randomRotation = Math.floor(Math.random() * 120) - 60 + (shapeCount * 90);
+            const randomScale = 0.85 + Math.random() * 0.25; 
+
+            // Отправляем в CSS переменные
             root.style.setProperty('--morph-radius', randomShape);
             root.style.setProperty('--morph-rotate', `${randomRotation}deg`);
             root.style.setProperty('--morph-scale', randomScale);
@@ -218,11 +217,11 @@
             shapeCount++;
         }
 
-        // Запускаем цикл морфинга сразу после загрузки скрипта
+        // Запуск генератора
         runMorph();
         const morphInterval = setInterval(runMorph, 450);
 
-        // Ровно через 2 секунды плавно прячем сплеш
+        // Закрытие сплеш-скрина через 2 секунды
         window.addEventListener('load', () => {
             setTimeout(() => {
                 clearInterval(morphInterval);
@@ -279,7 +278,6 @@
             requestAnimationFrame(animate);
         }
         
-        // Запуск холста после первого кадра
         requestAnimationFrame(animate);
     </script>
 </body>
