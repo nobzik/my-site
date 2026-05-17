@@ -4,11 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>amakar.tech</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
     
     <style>
+        /* Подключаем оригинальный шрифт Google Sans (веб-версия) */
+        @font-face {
+            font-family: 'Google Sans';
+            src: url('https://fonts.gstatic.com/s/googlesans/v14/4UaGrENHsxJLGDuGo1OIlL3Kwp5MKg.woff2') format('woff2');
+            font-weight: 400;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'Google Sans';
+            src: url('https://fonts.gstatic.com/s/googlesans/v14/4UaerENHsxJLGDuGo1OIlC1WixN0iaFF.woff2') format('woff2');
+            font-weight: 500;
+            font-style: normal;
+        }
+
         :root {
             --md-bg: #0a0c10;
             --md-surface: rgba(26, 28, 34, 0.75);
@@ -25,7 +37,8 @@
             height: 100%;
             overflow: hidden;
             background-color: var(--md-bg);
-            font-family: 'Roboto', sans-serif;
+            /* Устанавливаем Google Sans главным шрифтом сайта */
+            font-family: 'Google Sans', system-ui, -apple-system, sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -59,7 +72,7 @@
 
         h1 {
             font-size: 2.4rem;
-            font-weight: 400;
+            font-weight: 400; /* В Pixel UI заголовки округлые и не перегруженные */
             margin: 0 0 8px 0;
             letter-spacing: -0.5px;
             color: var(--md-text);
@@ -69,11 +82,12 @@
             font-size: 1.1rem;
             color: var(--md-text-variant);
             margin: 0 0 32px 0;
+            letter-spacing: 0.2px;
         }
 
         /* --- БЕСКОНЕЧНЫЙ МЯГКИЙ WAVY ИНДИКАТОР --- */
         .m3-wavy-container {
-            width: 200px; /* Фиксированная ширина окна просмотра */
+            width: 200px; 
             height: 24px;
             margin-bottom: 32px;
             overflow: hidden;
@@ -85,25 +99,19 @@
             top: 0;
             left: 0;
             height: 100%;
-            width: 240px; /* Длина SVG чуть больше контейнера для запаса смещения */
-            /* Сдвигаем ровно на длину одного периода волны (40px) */
+            width: 240px; 
             animation: m3-wavy-loop 1.2s linear infinite;
         }
 
         .wavy-path {
-            stroke: var(--md-primary); /* Вся волна одним цветом */
+            stroke: var(--md-primary); 
             stroke-width: 4px;
             stroke-linecap: round;
         }
 
-        /* Идеальный бесшовный цикл: сдвиг на 40 пикселей влево */
         @keyframes m3-wavy-loop {
-            0% {
-                transform: translateX(0);
-            }
-            100% {
-                transform: translateX(-40px);
-            }
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-40px); }
         }
         /* ------------------------------------------- */
 
@@ -120,6 +128,7 @@
             border-radius: 22px;
             text-decoration: none;
             transition: background-color 0.2s, transform 0.1s;
+            letter-spacing: 0.3px;
         }
 
         .m3-button:hover {
@@ -149,7 +158,7 @@
     </div>
 
     <script>
-        // Код фонового летающего текста
+        // Код фонового летающего текста (теперь тоже рендерится в Google Sans)
         const canvas = document.getElementById('canvas-bg');
         const ctx = canvas.getContext('2d');
 
@@ -195,7 +204,8 @@
 
             draw() {
                 ctx.fillStyle = `rgba(168, 199, 250, ${this.opacity})`;
-                ctx.font = `${this.fontSize}px 'Roboto', sans-serif`;
+                // Указываем Google Sans для холста canvas
+                ctx.font = `${this.fontSize}px 'Google Sans', sans-serif`;
                 ctx.fillText(this.text, this.x, this.y);
             }
         }
