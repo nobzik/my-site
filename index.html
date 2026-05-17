@@ -3,56 +3,99 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>makar</title>
+    <title>amakar.tech</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    
     <style>
-        /* Основные стили для страницы */
+        :root {
+            /* Официальная темная палитра из гайдлайнов Material Design 3 */
+            --md-bg: #111318;             /* Глубокий темный фон */
+            --md-surface: #1a1c22;        /* Фон карточки (чуть светлее) */
+            --md-primary: #a8c7fa;        /* Акцентный пастельно-синий цвет */
+            --md-on-primary: #062e6f;     /* Цвет текста внутри синей кнопки */
+            --md-text: #e2e2e9;           /* Главный белый текст */
+            --md-text-variant: #c4c6d0;   /* Серый текст для подзаголовков */
+        }
+
         body {
-            background-color: #121212; /* Тёмно-серый фон (не чисто черный, приятнее для глаз) */
-            color: #ffffff; /* Белый текст */
-            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif; /* Красивый шрифт (системный для iOS/macOS) */
-            display: flex; /* Делаем гибкий контейнер */
-            justify-content: center; /* Центрируем по горизонтали */
-            align-items: center; /* Центрируем по вертикали */
-            height: 100vh; /* Высота всей страницы (высота экрана) */
-            margin: 0; /* Убираем отступы по краям */
-            text-align: center; /* Текст по центру */
+            background-color: var(--md-bg);
+            color: var(--md-text);
+            font-family: 'Roboto', system-ui, -apple-system, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            padding: 16px;
+            box-sizing: border-box;
         }
 
-        /* Стиль для главного заголовка MAKAR */
+        /* Контейнер-карточка в стиле Material 3 */
+        .m3-card {
+            background-color: var(--md-surface);
+            border-radius: 28px; /* Фирменное сильное скругление углов M3 */
+            padding: 32px 24px;
+            max-width: 320px;
+            width: 100%;
+            text-align: center;
+            /* Мягкая Material-тень */
+            box-shadow: 0px 1px 3px 1px rgba(0,0,0,0.15), 0px 1px 2px rgba(0,0,0,0.3);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
         h1 {
-            font-size: 3.5rem; /* Крупный размер шрифта */
-            font-weight: 800; /* Очень жирный */
-            letter-spacing: -2px; /* Чуть сближаем буквы для стиля */
-            margin-bottom: 10px; /* Отступ снизу */
+            font-size: 2.2rem;
+            font-weight: 400;
+            margin: 0 0 8px 0;
+            letter-spacing: -0.5px;
         }
 
-        /* Стиль для надписи "здравстуйте" */
         p {
-            font-size: 1.2rem; /* Обычный размер */
-            color: #888; /* Серый цвет текста */
-            margin-bottom: 30px; /* Отступ снизу до ссылки */
-            text-transform: lowercase; /* Делаем текст маленькими буквами автоматически */
+            font-size: 1rem;
+            color: var(--md-text-variant);
+            margin: 0 0 32px 0;
+            letter-spacing: 0.2px;
         }
 
-        /* Стиль для ссылки на Telegram */
-        a {
-            color: #007aff; /* Классический синий цвет ссылок (как в Telegram) */
-            text-decoration: none; /* Убираем нижнее подчеркивание */
-            font-weight: 600; /* Полужирный шрифт */
-            transition: color 0.3s; /* Плавное изменение цвета при наведении */
+        /* Заполненная кнопка (Filled Button) по гайдам Google */
+        .m3-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--md-primary);
+            color: var(--md-on-primary);
+            font-weight: 500;
+            font-size: 0.875rem;
+            letter-spacing: 0.1px;
+            padding: 0 24px;
+            height: 40px;
+            border-radius: 20px; /* Овальная кнопка */
+            text-decoration: none;
+            transition: background-color 0.2s, box-shadow 0.2s;
         }
 
-        /* Стиль ссылки при наведении мыши */
-        a:hover {
-            color: #ffffff; /* При наведении ссылка становится белой */
+        /* Эффект наведения (Hover) */
+        .m3-button:hover {
+            background-color: #bd9afc;
+            background-image: linear-gradient(rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.08));
+            box-shadow: 0px 1px 3px rgba(0,0,0,0.3);
+        }
+
+        /* Эффект при нажатии (Active) */
+        .m3-button:active {
+            background-image: linear-gradient(rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.12));
         }
     </style>
 </head>
 <body>
-    <div>
-        <h1>makar</h1>
+
+    <div class="m3-card">
+        <h1>макар</h1>
         <p>здравствуйте</p>
-        <a href="https://t.me/tgmakar">Telegram</a>
+        <a href="https://t.me/tgmakar" class="m3-button">telegram</a>
     </div>
+
 </body>
 </html>
