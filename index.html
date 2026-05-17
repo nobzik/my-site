@@ -58,7 +58,7 @@
             pointer-events: none;
         }
 
-        /* ОФИЦИАЛЬНЫЙ M3 EXPRESSIVE LOADING INDICATOR (Contained) */
+        /* Контейнер по центру */
         .m3-loader-container {
             width: 80px;
             height: 80px;
@@ -71,22 +71,14 @@
             border: 1px solid rgba(255, 255, 255, 0.05);
         }
 
+        /* Сама фигура */
         .m3-expressive-shape {
             width: 40px;
             height: 40px;
             background-color: var(--md-primary);
-            /* cubic-bezier(0.2, 0, 0, 1) - это каноничная кривая Emphasized Decelerate из Android */
-            animation: m3-expressive-morph 4s infinite cubic-bezier(0.2, 0, 0, 1);
-        }
-
-        /* Строгий порядок красивых, нерандомных форм с задержками (пружинный эффект) */
-        @keyframes m3-expressive-morph {
-            0%, 10%   { border-radius: 50%; transform: rotate(0deg) scale(1); } /* Идеальный круг */
-            20%, 30%  { border-radius: 10px; transform: rotate(90deg) scale(0.9); } /* Мягкий квадрат */
-            40%, 50%  { border-radius: 20px 4px 20px 4px; transform: rotate(180deg) scale(1.05); } /* Лепесток */
-            60%, 70%  { border-radius: 4px 20px 4px 20px; transform: rotate(270deg) scale(0.95); } /* Обратный лепесток */
-            80%, 90%  { border-radius: 20px 20px 6px 6px; transform: rotate(360deg) scale(1.0); } /* Купол */
-            100%      { border-radius: 50%; transform: rotate(450deg) scale(1); } /* Возврат в круг */
+            will-change: border-radius, transform;
+            /* Плавная трансформация при смене через JS */
+            transition: border-radius 0.6s cubic-bezier(0.2, 0, 0, 1), transform 0.6s cubic-bezier(0.2, 0, 0, 1);
         }
         /* ------------------------------------- */
 
@@ -185,7 +177,7 @@
 
     <div id="splash-screen">
         <div class="m3-loader-container">
-            <div class="m3-expressive-shape"></div>
+            <div class="m3-expressive-shape" id="morph-shape"></div>
         </div>
     </div>
 
@@ -205,9 +197,42 @@
     </div>
 
     <script>
-        // Увеличил время загрузки до 2.5 сек, чтобы ты успел рассмотреть новую анимацию
+        // --- ЛОГИКА РАНДОМИЗАЦИИ ФИГУР ЗАГРУЗКИ ---
+        const shapeEl = document.getElementById('morph-shape');
+        
+        // Каноничные формы Material 3 Shape
+        const m3Shapes = [
+            { radius: '50%', scale: 1 },         // Круг
+            { radius: '10px', scale: 0.9 },      // Мягкий квадрат
+            { radius: '20px 4px 20px 4px', scale: 1.05 }, // Лепесток
+            { radius: '4px 20px 4px 20px', scale: 0.95 }, // Обратный лепесток
+            { radius: '20px 20px 6px 6px', scale: 1 }     // Купол
+        ];
+
+        let currentRotation = Math.floor(Math.random() * 360); // Случайное начальное вращение
+
+        function setRandomShape() {
+            // Выбираем случайную форму из списка
+            const nextShape = m3Shapes[Math.floor(Math.random() * m3Shapes.length)];
+            
+            // Добавляем случайный поворот от 45 до 135 градусов к текущему
+            currentRotation += Math.floor(Math.random() * 90) + 45; 
+
+            // Применяем стили напрямую через JS для мгновенного эффекта
+            shapeEl.style.borderRadius = nextShape.radius;
+            shapeEl.style.transform = `rotate(${currentRotation}deg) scale(${nextShape.scale})`;
+        }
+
+        // Запускаем первую случайную фигуру сразу при загрузке страницы
+        setRandomShape();
+
+        // Меняем форму каждые 600мс (чуть быстрее, чтобы не надоедало)
+        const morphInterval = setInterval(setRandomShape, 600);
+
+        // Плавное закрытие сплеша через 2.5 секунды
         window.addEventListener('load', () => {
             setTimeout(() => {
+                clearInterval(morphInterval);
                 const splash = document.getElementById('splash-screen');
                 if (splash) splash.classList.add('hidden');
             }, 2500);
