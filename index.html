@@ -21,6 +21,11 @@
             --md-on-primary: #062e6f;
             --md-text: #e2e2e9;
             --md-text-variant: #c4c6d0;
+            
+            /* Дефолтные значения для морфинга */
+            --morph-radius: 50%;
+            --morph-rotate: 0deg;
+            --morph-scale: 1;
         }
 
         body, html {
@@ -58,7 +63,7 @@
             pointer-events: none;
         }
 
-        /* Контейнер по центру */
+        /* Контейнер */
         .m3-loader-container {
             width: 80px;
             height: 80px;
@@ -72,13 +77,16 @@
         }
 
         /* Сама фигура */
-        .m3-expressive-shape {
-            width: 40px;
-            height: 40px;
+        .m3-morphing-shape {
+            width: 80px;
+            height: 80px;
             background-color: var(--md-primary);
+            border-radius: var(--morph-radius);
+            transform: rotate(var(--morph-rotate)) scale(var(--morph-scale));
+            /* Плавная трансформация и вращение */
+            transition: border-radius 0.6s cubic-bezier(0.2, 1, 0.2, 1), 
+                        transform 0.6s cubic-bezier(0.2, 1, 0.2, 1);
             will-change: border-radius, transform;
-            /* Плавная трансформация при смене через JS */
-            transition: border-radius 0.6s cubic-bezier(0.2, 0, 0, 1), transform 0.6s cubic-bezier(0.2, 0, 0, 1);
         }
         /* ------------------------------------- */
 
@@ -177,7 +185,7 @@
 
     <div id="splash-screen">
         <div class="m3-loader-container">
-            <div class="m3-expressive-shape" id="morph-shape"></div>
+            <div class="m3-morphing-shape" id="morph-shape"></div>
         </div>
     </div>
 
@@ -197,37 +205,36 @@
     </div>
 
     <script>
-        // --- ЛОГИКА РАНДОМИЗАЦИИ ФИГУР ЗАГРУЗКИ ---
-        const shapeEl = document.getElementById('morph-shape');
-        
-        // Каноничные формы Material 3 Shape
-        const m3Shapes = [
-            { radius: '50%', scale: 1 },         // Круг
-            { radius: '10px', scale: 0.9 },      // Мягкий квадрат
-            { radius: '20px 4px 20px 4px', scale: 1.05 }, // Лепесток
-            { radius: '4px 20px 4px 20px', scale: 0.95 }, // Обратный лепесток
-            { radius: '20px 20px 6px 6px', scale: 1 }     // Купол
-        ];
+        // --- ЛОГИКА БЕСКОНЕЧНОГО РАНДОМНОГО МОРФИНГА ---
+        const root = document.documentElement;
+        let shapeCount = 0;
 
-        let currentRotation = Math.floor(Math.random() * 360); // Случайное начальное вращение
-
-        function setRandomShape() {
-            // Выбираем случайную форму из списка
-            const nextShape = m3Shapes[Math.floor(Math.random() * m3Shapes.length)];
+        function runMorph() {
+            // Генерируем 4 абсолютно случайных радиуса для углов в диапазоне от 5% до 100%
+            const topLeft = Math.floor(Math.random() * 95) + 5;
+            const topRight = Math.floor(Math.random() * 95) + 5;
+            const bottomRight = Math.floor(Math.random() * 95) + 5;
+            const bottomLeft = Math.floor(Math.random() * 95) + 5;
             
-            // Добавляем случайный поворот от 45 до 135 градусов к текущему
-            currentRotation += Math.floor(Math.random() * 90) + 45; 
+            // Собираем строку CSS border-radius
+            const randomRadius = `${topLeft}% ${topRight}% ${bottomRight}% ${bottomLeft}%`;
+            
+            // Генерируем случайный поворот и легкое изменение масштаба для динамики
+            const randomRotation = Math.floor(Math.random() * 180) - 90 + (shapeCount * 90);
+            const randomScale = 0.85 + Math.random() * 0.25; 
 
-            // Применяем стили напрямую через JS для мгновенного эффекта
-            shapeEl.style.borderRadius = nextShape.radius;
-            shapeEl.style.transform = `rotate(${currentRotation}deg) scale(${nextShape.scale})`;
+            // Применяем новые стили через CSS-переменные
+            root.style.setProperty('--morph-radius', randomRadius);
+            root.style.setProperty('--morph-rotate', `${randomRotation}deg`);
+            root.style.setProperty('--morph-scale', randomScale);
+            
+            shapeCount++;
         }
 
-        // Запускаем первую случайную фигуру сразу при загрузке страницы
-        setRandomShape();
-
-        // Меняем форму каждые 600мс (чуть быстрее, чтобы не надоедало)
-        const morphInterval = setInterval(setRandomShape, 600);
+        // Запускаем первую фигуру сразу
+        runMorph();
+        // Меняем фигуру каждые 700мс
+        const morphInterval = setInterval(runMorph, 700);
 
         // Плавное закрытие сплеша через 2.5 секунды
         window.addEventListener('load', () => {
