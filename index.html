@@ -13,7 +13,6 @@
             --md-bg: #0a0c10;
             --md-surface: rgba(26, 28, 34, 0.75);
             --md-primary: #a8c7fa;        
-            --md-track: rgba(67, 71, 78, 0.4);          
             --md-on-primary: #062e6f;
             --md-text: #e2e2e9;
             --md-text-variant: #c4c6d0;
@@ -72,54 +71,39 @@
             margin: 0 0 32px 0;
         }
 
-        /* --- MATERIAL YOU WAVY PROGRESS INDICATOR --- */
+        /* --- БЕСКОНЕЧНЫЙ МЯГКИЙ WAVY ИНДИКАТОР --- */
         .m3-wavy-container {
-            width: 100%;
-            max-width: 200px;
-            height: 20px;
+            width: 200px; /* Фиксированная ширина окна просмотра */
+            height: 24px;
             margin-bottom: 32px;
             overflow: hidden;
             position: relative;
         }
 
         .m3-wavy-svg {
-            width: 200%; /* Делаем шире, чтобы бесконечно двигать влево */
-            height: 100%;
             position: absolute;
             top: 0;
             left: 0;
-            /* Анимация бегущей волны */
-            animation: m3-wavy-move 1.5s linear infinite;
+            height: 100%;
+            width: 240px; /* Длина SVG чуть больше контейнера для запаса смещения */
+            /* Сдвигаем ровно на длину одного периода волны (40px) */
+            animation: m3-wavy-loop 1.2s linear infinite;
         }
 
-        /* Задняя серая дорожка-волна */
-        .wavy-track {
-            stroke: var(--md-track);
+        .wavy-path {
+            stroke: var(--md-primary); /* Вся волна одним цветом */
             stroke-width: 4px;
             stroke-linecap: round;
         }
 
-        /* Активная синяя волна прогресса */
-        .wavy-progress {
-            stroke: var(--md-primary);
-            stroke-width: 4px;
-            stroke-linecap: round;
-            /* Штриховка, чтобы создать эффект прерывистого индикатора */
-            stroke-dasharray: 40, 30; 
-            animation: m3-wavy-dash 2s ease-in-out infinite;
-        }
-
-        /* Движение волны влево-вправо */
-        @keyframes m3-wavy-move {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); } /* Сдвигаем ровно на один повтор паттерна */
-        }
-
-        /* Дополнительное смещение ползунка для хаотичности */
-        @keyframes m3-wavy-dash {
-            0% { stroke-dashoffset: 0; }
-            50% { stroke-dashoffset: -50; }
-            100% { stroke-dashoffset: -140; }
+        /* Идеальный бесшовный цикл: сдвиг на 40 пикселей влево */
+        @keyframes m3-wavy-loop {
+            0% {
+                transform: translateX(0);
+            }
+            100% {
+                transform: translateX(-40px);
+            }
         }
         /* ------------------------------------------- */
 
@@ -156,9 +140,8 @@
         <p>здравствуйте</p>
         
         <div class="m3-wavy-container">
-            <svg class="m3-wavy-svg" viewBox="0 0 400 20" fill="none">
-                <path class="wavy-track" d="M 0 10 Q 20 0, 40 10 T 80 10 T 120 10 T 160 10 T 200 10 T 240 10 T 280 10 T 320 10 T 360 10 T 400 10" />
-                <path class="wavy-progress" d="M 0 10 Q 20 0, 40 10 T 80 10 T 120 10 T 160 10 T 200 10 T 240 10 T 280 10 T 320 10 T 360 10 T 400 10" />
+            <svg class="m3-wavy-svg" viewBox="0 0 240 24" fill="none">
+                <path class="wavy-path" d="M 0 12 Q 10 2, 20 12 T 40 12 T 60 12 T 80 12 T 100 12 T 120 12 T 140 12 T 160 12 T 180 12 T 200 12 T 220 12 T 240 12" />
             </svg>
         </div>
 
