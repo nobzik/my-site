@@ -11,7 +11,9 @@
     <style>
         :root {
             --md-bg: #0a0c10;
-            --md-primary: #a8c7fa;
+            --md-surface: rgba(26, 28, 34, 0.75);
+            --md-primary: #a8c7fa;        /* Цвет самого индикатора и кнопки */
+            --md-track: #43474e;          /* Цвет дорожки, по которой бегает круг */
             --md-on-primary: #062e6f;
             --md-text: #e2e2e9;
             --md-text-variant: #c4c6d0;
@@ -30,7 +32,6 @@
             align-items: center;
         }
 
-        /* Холст для летающего текста на заднем фоне */
         #canvas-bg {
             position: absolute;
             top: 0;
@@ -40,10 +41,9 @@
             z-index: 1;
         }
 
-        /* Карточка в стиле матового стекла (Glassmorphism + Material 3) */
         .m3-card {
-            background-color: rgba(26, 28, 34, 0.75); /* Полупрозрачный фон */
-            backdrop-filter: blur(16px); /* Эффект размытия заднего фона */
+            background-color: var(--md-surface);
+            backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
             border-radius: 28px;
             padding: 40px 24px;
@@ -52,7 +52,10 @@
             text-align: center;
             box-shadow: 0px 8px 32px rgba(0, 0, 0, 0.5);
             border: 1px solid rgba(255, 255, 255, 0.08);
-            z-index: 2; /* Поверх летающего текста */
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Центрируем всё внутри карточки */
         }
 
         h1 {
@@ -66,8 +69,60 @@
         p {
             font-size: 1.1rem;
             color: var(--md-text-variant);
-            margin: 0 0 32px 0;
+            margin: 0 0 24px 0;
         }
+
+        /* --- MATERIAL 3 PROGRESS INDICATOR --- */
+        .m3-progress-container {
+            margin-bottom: 32px;
+            position: relative;
+            width: 48px;
+            height: 48px;
+        }
+
+        /* Крутящаяся SVG плашка */
+        .m3-progress-svg {
+            animation: rotate 2s linear infinite;
+            transform-origin: center center;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Невидимый или полупрозрачный трек (дорожка) */
+        .m3-progress-track {
+            stroke: var(--md-track);
+            stroke-width: 4px;
+        }
+
+        /* Сам активный ползунок */
+        .m3-progress-circle {
+            stroke: var(--md-primary);
+            stroke-width: 4px; /* Толщина по гайдам M3 */
+            stroke-linecap: round; /* Скругленные края линии */
+            animation: dash 1.5s ease-in-out infinite;
+        }
+
+        /* Анимация вращения всей иконки */
+        @keyframes rotate {
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Анимация стягивания-растягивания круга (фирменный стиль Google) */
+        @keyframes dash {
+            0% {
+                stroke-dasharray: 1, 200;
+                stroke-dashoffset: 0;
+            }
+            50% {
+                stroke-dasharray: 89, 200;
+                stroke-dashoffset: -35px;
+            }
+            100% {
+                stroke-dasharray: 89, 200;
+                stroke-dashoffset: -124px;
+            }
+        }
+        /* ------------------------------------- */
 
         .m3-button {
             display: inline-flex;
@@ -100,14 +155,22 @@
     <div class="m3-card">
         <h1>макар</h1>
         <p>здравствуйте</p>
+        
+        <div class="m3-progress-container">
+            <svg class="m3-progress-svg" viewBox="25 25 50 50">
+                <circle class="m3-progress-track" cx="50" cy="50" r="20" fill="none"></circle>
+                <circle class="m3-progress-circle" cx="50" cy="50" r="20" fill="none" stroke-miterlimit="10"></circle>
+            </svg>
+        </div>
+
         <a href="https://t.me/tgmakar" class="m3-button">telegram</a>
     </div>
 
     <script>
+        // Код анимации летающих надписей на фоне
         const canvas = document.getElementById('canvas-bg');
         const ctx = canvas.getContext('2d');
 
-        // Подстраиваем размер холста под экран
         function resize() {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
@@ -115,7 +178,6 @@
         window.addEventListener('resize', resize);
         resize();
 
-        // Фразы для левитации
         const phrasesList = [
             "оооо телеграм",
             "оооо макар",
@@ -123,29 +185,27 @@
         ];
 
         const particles = [];
-        const maxParticles = 25; // Количество летающих надписей на экране
+        const maxParticles = 25;
 
         class TextParticle {
             constructor() {
                 this.reset();
-                this.y = Math.random() * canvas.height; // При старте раскидываем по высоте случайным образом
+                this.y = Math.random() * canvas.height;
             }
 
             reset() {
                 this.text = phrasesList[Math.floor(Math.random() * phrasesList.length)];
                 this.x = Math.random() * canvas.width;
-                this.y = canvas.height + Math.random() * 40; // Появляются снизу экрана
-                this.speed = 0.4 + Math.random() * 0.8; // Скорость подъема вверх
-                this.fontSize = 12 + Math.random() * 14; // Случайный размер текста
-                this.opacity = 0.08 + Math.random() * 0.15; // Полупрозрачные, чтобы не слепили глаза
-                this.drift = (Math.random() - 0.5) * 0.2; // Легкое покачивание влево-вправо
+                this.y = canvas.height + Math.random() * 40;
+                this.speed = 0.4 + Math.random() * 0.8;
+                this.fontSize = 12 + Math.random() * 14;
+                this.opacity = 0.08 + Math.random() * 0.15;
+                this.drift = (Math.random() - 0.5) * 0.2;
             }
 
             update() {
                 this.y -= this.speed;
                 this.x += this.drift;
-
-                // Если текст улетел за верхний край экрана, сбрасываем вниз
                 if (this.y < -30) {
                     this.reset();
                 }
@@ -158,20 +218,16 @@
             }
         }
 
-        // Создаем массив частиц
         for (let i = 0; i < maxParticles; i++) {
             particles.push(new TextParticle());
         }
 
-        // Цикл анимации
         function animate() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
             particles.forEach(p => {
                 p.update();
                 p.draw();
             });
-
             requestAnimationFrame(animate);
         }
 
