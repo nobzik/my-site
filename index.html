@@ -6,7 +6,7 @@
     <title>amakar.tech</title>
     
     <style>
-        /* Подключаем оригинальный шрифт Google Sans (веб-версия) */
+        /* Подключаем оригинальный шрифт Google Sans */
         @font-face {
             font-family: 'Google Sans';
             src: url('https://fonts.gstatic.com/s/googlesans/v14/4UaGrENHsxJLGDuGo1OIlL3Kwp5MKg.woff2') format('woff2');
@@ -37,12 +37,62 @@
             height: 100%;
             overflow: hidden;
             background-color: var(--md-bg);
-            /* Устанавливаем Google Sans главным шрифтом сайта */
             font-family: 'Google Sans', system-ui, -apple-system, sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
         }
+
+        /* --- ЭКРАН ЗАГРУЗКИ (SPLASH SCREEN) --- */
+        #splash-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: var(--md-bg);
+            z-index: 9999; /* Поверх всего сайта */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.6s cubic-bezier(0.2, 0, 0, 1), visibility 0.6s;
+        }
+
+        /* Класс, который скроет экран загрузки */
+        #splash-screen.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        /* Анимация плавного изменения форм (Material Shape Morphing) */
+        .m3-morphing-shape {
+            width: 80px;
+            height: 80px;
+            background-color: var(--md-primary);
+            /* Играем с углами: от 50% (круг) до 4px (острый угол) и 32px (мягкий угол) */
+            animation: shape-morph 2s cubic-bezier(0.4, 0, 0.2, 1) infinite alternate;
+        }
+
+        @keyframes shape-morph {
+            0% { 
+                border-radius: 50%; /* Идеальный круг */
+                transform: rotate(0deg) scale(0.9);
+            }
+            33% { 
+                border-radius: 32px 4px 32px 32px; /* Форма капли/сообщения */
+                transform: rotate(90deg) scale(1);
+            }
+            66% { 
+                border-radius: 4px 32px 4px 32px; /* Форма листика */
+                transform: rotate(180deg) scale(1.1);
+            }
+            100% { 
+                border-radius: 32px; /* Стандартная мягкая M3 карточка */
+                transform: rotate(270deg) scale(1);
+            }
+        }
+        /* ------------------------------------- */
 
         #canvas-bg {
             position: absolute;
@@ -72,7 +122,7 @@
 
         h1 {
             font-size: 2.4rem;
-            font-weight: 400; /* В Pixel UI заголовки округлые и не перегруженные */
+            font-weight: 400;
             margin: 0 0 8px 0;
             letter-spacing: -0.5px;
             color: var(--md-text);
@@ -85,7 +135,6 @@
             letter-spacing: 0.2px;
         }
 
-        /* --- БЕСКОНЕЧНЫЙ МЯГКИЙ WAVY ИНДИКАТОР --- */
         .m3-wavy-container {
             width: 200px; 
             height: 24px;
@@ -113,7 +162,6 @@
             0% { transform: translateX(0); }
             100% { transform: translateX(-40px); }
         }
-        /* ------------------------------------------- */
 
         .m3-button {
             display: inline-flex;
@@ -142,6 +190,10 @@
 </head>
 <body>
 
+    <div id="splash-screen">
+        <div class="m3-morphing-shape"></div>
+    </div>
+
     <canvas id="canvas-bg"></canvas>
 
     <div class="m3-card">
@@ -158,7 +210,15 @@
     </div>
 
     <script>
-        // Код фонового летающего текста (теперь тоже рендерится в Google Sans)
+        // ЛОГИКА ЭКРАНА ЗАГРУЗКИ
+        // Ждем 2 секунды (2000 мс) после отрисовки страницы и плавно скрываем сплеш-скрин
+        window.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                document.getElementById('splash-screen').classList.add('hidden');
+            }, 2000);
+        });
+
+        // Код фонового летающего текста
         const canvas = document.getElementById('canvas-bg');
         const ctx = canvas.getContext('2d');
 
@@ -204,7 +264,6 @@
 
             draw() {
                 ctx.fillStyle = `rgba(168, 199, 250, ${this.opacity})`;
-                // Указываем Google Sans для холста canvas
                 ctx.font = `${this.fontSize}px 'Google Sans', sans-serif`;
                 ctx.fillText(this.text, this.x, this.y);
             }
