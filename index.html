@@ -7,171 +7,175 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
     
     <style>
         :root {
-            /* Палитра Material Design 3 (Тёмная тема) */
-            --md-bg: #0f1115;
-            --md-surface: #1d2026;
-            --md-surface-variant: #282a31;
+            --md-bg: #0a0c10;
             --md-primary: #a8c7fa;
             --md-on-primary: #062e6f;
-            --md-primary-container: #2a457a;
-            --md-on-primary-container: #d6e2ff;
             --md-text: #e2e2e9;
             --md-text-variant: #c4c6d0;
-            --md-outline: #43474e;
         }
 
-        body {
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
             background-color: var(--md-bg);
-            color: var(--md-text);
             font-family: 'Roboto', sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
-            margin: 0;
-            padding: 16px;
-            box-sizing: border-box;
         }
 
-        /* Главный контейнер в стиле виджета Android */
-        .m3-wrapper {
-            background-color: var(--md-surface);
-            border-radius: 28px;
-            padding: 24px;
-            max-width: 360px;
+        /* Холст для летающего текста на заднем фоне */
+        #canvas-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
-            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.4);
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
+            height: 100%;
+            z-index: 1;
         }
 
-        .header {
+        /* Карточка в стиле матового стекла (Glassmorphism + Material 3) */
+        .m3-card {
+            background-color: rgba(26, 28, 34, 0.75); /* Полупрозрачный фон */
+            backdrop-filter: blur(16px); /* Эффект размытия заднего фона */
+            -webkit-backdrop-filter: blur(16px);
+            border-radius: 28px;
+            padding: 40px 24px;
+            max-width: 300px;
+            width: 85%;
             text-align: center;
-            padding: 8px 0;
+            box-shadow: 0px 8px 32px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            z-index: 2; /* Поверх летающего текста */
         }
 
         h1 {
-            font-size: 1.8rem;
+            font-size: 2.4rem;
             font-weight: 400;
-            margin: 0 0 6px 0;
-            color: var(--md-primary);
+            margin: 0 0 8px 0;
             letter-spacing: -0.5px;
+            color: var(--md-text);
         }
 
-        .subtitle {
+        p {
             font-size: 1.1rem;
             color: var(--md-text-variant);
-            margin: 0;
+            margin: 0 0 32px 0;
         }
 
-        /* Внутренняя M3-карточка (как элемент списка в Android) */
-        .m3-inner-card {
-            background-color: var(--md-surface-variant);
-            border-radius: 16px;
-            padding: 16px;
-            display: flex;
+        .m3-button {
+            display: inline-flex;
             align-items: center;
-            gap: 16px;
-        }
-
-        /* Иконка в контейнере */
-        .m3-icon-box {
-            background-color: var(--md-primary-container);
-            color: var(--md-on-primary-container);
-            width: 48px;
-            height: 48px;
-            border-radius: 12px;
-            display: flex;
             justify-content: center;
-            align-items: center;
-        }
-
-        .card-text-main {
-            font-size: 1rem;
-            font-weight: 500;
-            margin-bottom: 2px;
-        }
-
-        .card-text-sub {
-            font-size: 0.85rem;
-            color: var(--md-text-variant);
-        }
-
-        /* Блок с тегами/чипсами (Material Chips) */
-        .m3-chips-group {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-            justify-content: center;
-            padding: 4px 0;
-        }
-
-        .m3-chip {
-            border: 1px solid var(--md-outline);
-            border-radius: 8px;
-            padding: 6px 12px;
-            font-size: 0.85rem;
-            color: var(--md-text);
-            background: transparent;
-        }
-
-        /* Огромная овальная кнопка во всю ширину (FAB / Filled Button) */
-        .m3-btn-block {
             background-color: var(--md-primary);
             color: var(--md-on-primary);
             font-weight: 500;
             font-size: 0.9rem;
-            height: 52px;
-            border-radius: 100px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
+            padding: 0 24px;
+            height: 44px;
+            border-radius: 22px;
             text-decoration: none;
-            margin-top: 8px;
-            transition: opacity 0.2s, transform 0.1s;
+            transition: background-color 0.2s, transform 0.1s;
         }
 
-        .m3-btn-block:active {
-            transform: scale(0.98);
-            opacity: 0.9;
+        .m3-button:hover {
+            background-image: linear-gradient(rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.08));
+        }
+
+        .m3-button:active {
+            transform: scale(0.97);
         }
     </style>
 </head>
 <body>
 
-    <div class="m3-wrapper">
-        <div class="header">
-            <h1>ааааа макар телеграм</h1>
-            <p class="subtitle">ооо телеграм</p>
-        </div>
+    <canvas id="canvas-bg"></canvas>
 
-        <div class="m3-inner-card">
-            <div class="m3-icon-box">
-                <span class="material-symbols-outlined">send</span>
-            </div>
-            <div>
-                <div class="card-text-main">макар телеграм</div>
-                <div class="card-text-sub">ооо телеграм ааааа</div>
-            </div>
-        </div>
-
-        <div class="m3-chips-group">
-            <div class="m3-chip">ооо телеграм</div>
-            <div class="m3-chip">макар телеграм</div>
-            <div class="m3-chip">ааааа</div>
-        </div>
-
-        <a href="https://t.me/tgmakar" class="m3-btn-block">
-            <span class="material-symbols-outlined">link</span>
-            ооо телеграм
-        </a>
+    <div class="m3-card">
+        <h1>макар</h1>
+        <p>здравствуйте</p>
+        <a href="https://t.me/tgmakar" class="m3-button">telegram</a>
     </div>
 
+    <script>
+        const canvas = document.getElementById('canvas-bg');
+        const ctx = canvas.getContext('2d');
+
+        // Подстраиваем размер холста под экран
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        // Фразы для левитации
+        const phrasesList = [
+            "оооо телеграм",
+            "оооо макар",
+            "о да паша дуров храни телеграм"
+        ];
+
+        const particles = [];
+        const maxParticles = 25; // Количество летающих надписей на экране
+
+        class TextParticle {
+            constructor() {
+                this.reset();
+                this.y = Math.random() * canvas.height; // При старте раскидываем по высоте случайным образом
+            }
+
+            reset() {
+                this.text = phrasesList[Math.floor(Math.random() * phrasesList.length)];
+                this.x = Math.random() * canvas.width;
+                this.y = canvas.height + Math.random() * 40; // Появляются снизу экрана
+                this.speed = 0.4 + Math.random() * 0.8; // Скорость подъема вверх
+                this.fontSize = 12 + Math.random() * 14; // Случайный размер текста
+                this.opacity = 0.08 + Math.random() * 0.15; // Полупрозрачные, чтобы не слепили глаза
+                this.drift = (Math.random() - 0.5) * 0.2; // Легкое покачивание влево-вправо
+            }
+
+            update() {
+                this.y -= this.speed;
+                this.x += this.drift;
+
+                // Если текст улетел за верхний край экрана, сбрасываем вниз
+                if (this.y < -30) {
+                    this.reset();
+                }
+            }
+
+            draw() {
+                ctx.fillStyle = `rgba(168, 199, 250, ${this.opacity})`;
+                ctx.font = `${this.fontSize}px 'Roboto', sans-serif`;
+                ctx.fillText(this.text, this.x, this.y);
+            }
+        }
+
+        // Создаем массив частиц
+        for (let i = 0; i < maxParticles; i++) {
+            particles.push(new TextParticle());
+        }
+
+        // Цикл анимации
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+
+            requestAnimationFrame(animate);
+        }
+
+        animate();
+    </script>
 </body>
 </html>
