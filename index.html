@@ -7,94 +7,170 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
     
     <style>
         :root {
-            /* Официальная темная палитра из гайдлайнов Material Design 3 */
-            --md-bg: #111318;             /* Глубокий темный фон */
-            --md-surface: #1a1c22;        /* Фон карточки (чуть светлее) */
-            --md-primary: #a8c7fa;        /* Акцентный пастельно-синий цвет */
-            --md-on-primary: #062e6f;     /* Цвет текста внутри синей кнопки */
-            --md-text: #e2e2e9;           /* Главный белый текст */
-            --md-text-variant: #c4c6d0;   /* Серый текст для подзаголовков */
+            /* Палитра Material Design 3 (Тёмная тема) */
+            --md-bg: #0f1115;
+            --md-surface: #1d2026;
+            --md-surface-variant: #282a31;
+            --md-primary: #a8c7fa;
+            --md-on-primary: #062e6f;
+            --md-primary-container: #2a457a;
+            --md-on-primary-container: #d6e2ff;
+            --md-text: #e2e2e9;
+            --md-text-variant: #c4c6d0;
+            --md-outline: #43474e;
         }
 
         body {
             background-color: var(--md-bg);
             color: var(--md-text);
-            font-family: 'Roboto', system-ui, -apple-system, sans-serif;
+            font-family: 'Roboto', sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            min-height: 100vh;
             margin: 0;
             padding: 16px;
             box-sizing: border-box;
         }
 
-        /* Контейнер-карточка в стиле Material 3 */
-        .m3-card {
+        /* Главный контейнер в стиле виджета Android */
+        .m3-wrapper {
             background-color: var(--md-surface);
-            border-radius: 28px; /* Фирменное сильное скругление углов M3 */
-            padding: 32px 24px;
-            max-width: 320px;
+            border-radius: 28px;
+            padding: 24px;
+            max-width: 360px;
             width: 100%;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.4);
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .header {
             text-align: center;
-            /* Мягкая Material-тень */
-            box-shadow: 0px 1px 3px 1px rgba(0,0,0,0.15), 0px 1px 2px rgba(0,0,0,0.3);
-            border: 1px solid rgba(255, 255, 255, 0.04);
+            padding: 8px 0;
         }
 
         h1 {
-            font-size: 2.2rem;
+            font-size: 1.8rem;
             font-weight: 400;
-            margin: 0 0 8px 0;
+            margin: 0 0 6px 0;
+            color: var(--md-primary);
             letter-spacing: -0.5px;
         }
 
-        p {
-            font-size: 1rem;
+        .subtitle {
+            font-size: 1.1rem;
             color: var(--md-text-variant);
-            margin: 0 0 32px 0;
-            letter-spacing: 0.2px;
+            margin: 0;
         }
 
-        /* Заполненная кнопка (Filled Button) по гайдам Google */
-        .m3-button {
-            display: inline-flex;
+        /* Внутренняя M3-карточка (как элемент списка в Android) */
+        .m3-inner-card {
+            background-color: var(--md-surface-variant);
+            border-radius: 16px;
+            padding: 16px;
+            display: flex;
             align-items: center;
+            gap: 16px;
+        }
+
+        /* Иконка в контейнере */
+        .m3-icon-box {
+            background-color: var(--md-primary-container);
+            color: var(--md-on-primary-container);
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
             justify-content: center;
+            align-items: center;
+        }
+
+        .card-text-main {
+            font-size: 1rem;
+            font-weight: 500;
+            margin-bottom: 2px;
+        }
+
+        .card-text-sub {
+            font-size: 0.85rem;
+            color: var(--md-text-variant);
+        }
+
+        /* Блок с тегами/чипсами (Material Chips) */
+        .m3-chips-group {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            justify-content: center;
+            padding: 4px 0;
+        }
+
+        .m3-chip {
+            border: 1px solid var(--md-outline);
+            border-radius: 8px;
+            padding: 6px 12px;
+            font-size: 0.85rem;
+            color: var(--md-text);
+            background: transparent;
+        }
+
+        /* Огромная овальная кнопка во всю ширину (FAB / Filled Button) */
+        .m3-btn-block {
             background-color: var(--md-primary);
             color: var(--md-on-primary);
             font-weight: 500;
-            font-size: 0.875rem;
-            letter-spacing: 0.1px;
-            padding: 0 24px;
-            height: 40px;
-            border-radius: 20px; /* Овальная кнопка */
+            font-size: 0.9rem;
+            height: 52px;
+            border-radius: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
             text-decoration: none;
-            transition: background-color 0.2s, box-shadow 0.2s;
+            margin-top: 8px;
+            transition: opacity 0.2s, transform 0.1s;
         }
 
-        /* Эффект наведения (Hover) */
-        .m3-button:hover {
-            background-color: #bd9afc;
-            background-image: linear-gradient(rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.08));
-            box-shadow: 0px 1px 3px rgba(0,0,0,0.3);
-        }
-
-        /* Эффект при нажатии (Active) */
-        .m3-button:active {
-            background-image: linear-gradient(rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.12));
+        .m3-btn-block:active {
+            transform: scale(0.98);
+            opacity: 0.9;
         }
     </style>
 </head>
 <body>
 
-    <div class="m3-card">
-        <h1>макар</h1>
-        <p>здравствуйте</p>
-        <a href="https://t.me/tgmakar" class="m3-button">telegram</a>
+    <div class="m3-wrapper">
+        <div class="header">
+            <h1>ааааа макар телеграм</h1>
+            <p class="subtitle">ооо телеграм</p>
+        </div>
+
+        <div class="m3-inner-card">
+            <div class="m3-icon-box">
+                <span class="material-symbols-outlined">send</span>
+            </div>
+            <div>
+                <div class="card-text-main">макар телеграм</div>
+                <div class="card-text-sub">ооо телеграм ааааа</div>
+            </div>
+        </div>
+
+        <div class="m3-chips-group">
+            <div class="m3-chip">ооо телеграм</div>
+            <div class="m3-chip">макар телеграм</div>
+            <div class="m3-chip">ааааа</div>
+        </div>
+
+        <a href="https://t.me/tgmakar" class="m3-btn-block">
+            <span class="material-symbols-outlined">link</span>
+            ооо телеграм
+        </a>
     </div>
 
 </body>
