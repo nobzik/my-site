@@ -2,8 +2,10 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>amakar.tech</title>
+    
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0..1,0">
     
     <style>
         /* Подключаем жирный Google Sans */
@@ -17,10 +19,21 @@
         :root {
             --md-bg: #0a0c10;
             --md-surface: rgba(26, 28, 34, 0.75);
+            --md-secondary-container: #334458;
+            --md-on-secondary-container: #d3e3fd;
             --md-primary: #a8c7fa;        
             --md-on-primary: #062e6f;
             --md-text: #e2e2e9;
             --md-text-variant: #c4c6d0;
+            
+            /* Фирменный голубой цвет Telegram для MD3 карточки */
+            --tg-brand-color: rgba(36, 161, 222, 0.2); 
+            --tg-text-color: #74c7ff;
+        }
+
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body, html {
@@ -32,9 +45,6 @@
             background-color: var(--md-bg);
             font-family: 'Google Sans', system-ui, -apple-system, sans-serif;
             font-weight: 700;
-            display: flex;
-            justify-content: center;
-            align-items: center;
         }
 
         /* --- ЭКРАН ЗАГРУЗКИ --- */
@@ -45,7 +55,7 @@
             width: 100vw;
             height: 100vh;
             background-color: var(--md-bg);
-            z-index: 9999;
+            z-index: 10000;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -58,7 +68,6 @@
             pointer-events: none;
         }
 
-        /* Контейнер по центру */
         .m3-loader-container {
             width: 80px;
             height: 80px;
@@ -71,41 +80,60 @@
             border: 1px solid rgba(255, 255, 255, 0.05);
         }
 
-        /* Сама фигура */
         .m3-expressive-shape {
             width: 40px;
             height: 40px;
             background-color: var(--md-primary);
             will-change: border-radius, transform;
-            /* Плавная трансформация при смене через JS */
             transition: border-radius 0.6s cubic-bezier(0.2, 0, 0, 1), transform 0.6s cubic-bezier(0.2, 0, 0, 1);
         }
-        /* ------------------------------------- */
 
+        /* --- BACKGROUND ANIMATION --- */
         #canvas-bg {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
             z-index: 1;
         }
 
-        .m3-card {
+        /* --- CONTENT SYSTEM --- */
+        .content-wrapper {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .page {
+            position: absolute;
+            width: 85%;
+            max-width: 330px;
             background-color: var(--md-surface);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
             border-radius: 28px;
             padding: 40px 24px;
-            max-width: 300px;
-            width: 85%;
             text-align: center;
             box-shadow: 0px 8px 32px rgba(0, 0, 0, 0.5);
             border: 1px solid rgba(255, 255, 255, 0.08);
-            z-index: 2;
+            
+            opacity: 0;
+            transform: translateY(20px) scale(0.95);
+            visibility: hidden;
+            transition: all 0.4s cubic-bezier(0.2, 0, 0, 1);
+            
             display: flex;
             flex-direction: column;
-            align-items: center; 
+            align-items: center;
+        }
+
+        .page.active {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            visibility: visible;
         }
 
         h1 {
@@ -115,16 +143,32 @@
             color: var(--md-text);
         }
 
+        h2 {
+            font-size: 1.4rem;
+            color: var(--md-primary);
+            margin: 0 0 24px 0;
+            letter-spacing: 0.5px;
+        }
+        
         p {
             font-size: 1.2rem;
             color: var(--md-text-variant);
-            margin: 0 0 32px 0;
+            margin: 0 0 16px 0;
         }
 
+        /* --- КОНТЕЙНЕР ПРИВЕТСТВИЙ НА РАЗНЫХ ЯЗЫКАХ --- */
+        .hellos-container {
+            font-size: 1.05rem;
+            color: var(--md-text-variant);
+            margin-bottom: 24px;
+            line-height: 1.5;
+            opacity: 0.85;
+        }
+
+        /* --- ТА САМАЯ ИДЕАЛЬНАЯ ВОЛНА --- */
         .m3-wavy-container {
             width: 200px; 
             height: 24px;
-            margin-bottom: 32px;
             overflow: hidden;
             position: relative;
         }
@@ -135,6 +179,7 @@
             left: 0;
             height: 100%;
             width: 240px; 
+            will-change: transform;
             animation: m3-wavy-loop 1.2s linear infinite;
         }
 
@@ -145,32 +190,128 @@
         }
 
         @keyframes m3-wavy-loop {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-40px); }
+            0% { transform: translate3d(0, 0, 0); }
+            100% { transform: translate3d(-40px, 0, 0); }
         }
 
-        .m3-button {
-            display: inline-flex;
+        /* --- МАТЕРИАЛ ДИЗАЙН 3 СОЦСЕТИ (ГОЛУБАЯ КНОПКА ТГ) --- */
+        .social-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            width: 100%;
+        }
+
+        .social-item {
+            display: flex;
+            align-items: center;
+            background-color: var(--tg-brand-color); 
+            padding: 16px 20px;
+            border-radius: 16px; 
+            text-decoration: none;
+            color: var(--tg-text-color); 
+            font-size: 1.1rem;
+            letter-spacing: 0.15px;
+            border: 1px solid rgba(36, 161, 222, 0.15);
+            transition: background-color 0.2s, transform 0.1s;
+            width: 100%;
+        }
+
+        .social-item:hover {
+            background-image: linear-gradient(rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.05));
+        }
+
+        .social-item:active { 
+            transform: scale(0.98);
+            background-color: rgba(36, 161, 222, 0.35); 
+        }
+
+        .social-item .social-icon { 
+            margin-right: 16px; 
+            color: var(--tg-text-color); 
+            font-size: 24px;
+            display: flex;
             align-items: center;
             justify-content: center;
-            background-color: var(--md-primary);
-            color: var(--md-on-primary);
-            font-size: 1rem;
-            padding: 0 24px;
-            height: 48px;
-            border-radius: 24px;
-            text-decoration: none;
-            transition: background-color 0.2s, transform 0.1s;
-            letter-spacing: 0.5px;
         }
 
-        .m3-button:hover {
-            background-image: linear-gradient(rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.08));
+        /* --- СТРАНИЦА ИНФО --- */
+        .info-stats {
+            background: rgba(0,0,0,0.2);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 20px;
+            text-align: left;
+            width: 100%;
+        }
+        .stat-line {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+        }
+        .stat-line:not(:last-child) { margin-bottom: 8px; }
+        .stat-label { color: var(--md-text-variant); }
+        .stat-value { color: var(--md-primary); }
+
+        .credit-badge {
+            font-size: 0.75rem;
+            letter-spacing: 1px;
+            color: var(--md-primary);
+            opacity: 0.8;
+            line-height: 1.4;
         }
 
-        .m3-button:active {
-            transform: scale(0.97);
+        /* --- НИЖНЯЯ ПАНЕЛЬ НАВИГАЦИИ (M3 PILL) --- */
+        .m3-floating-nav {
+            position: fixed;
+            bottom: 32px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(26, 28, 34, 0.85);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            padding: 8px;
+            border-radius: 100px;
+            display: flex;
+            gap: 8px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+            border: 1px solid rgba(255,255,255,0.1);
+            z-index: 1000;
         }
+
+        .nav-item {
+            position: relative;
+            width: 64px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--md-text-variant);
+            transition: color 0.3s;
+        }
+
+        .nav-indicator {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-color: var(--md-secondary-container);
+            border-radius: 100px;
+            z-index: -1;
+            opacity: 0;
+            transform: scaleX(0.5);
+            transition: all 0.3s cubic-bezier(0.2, 0, 0, 1);
+        }
+
+        .nav-item.active { color: var(--md-on-secondary-container); }
+        .nav-item.active .nav-indicator {
+            opacity: 1;
+            transform: scaleX(1);
+        }
+
+        .material-symbols-rounded { font-variation-settings: 'FILL' 0; transition: 0.2s; }
+        .nav-item.active .material-symbols-rounded { font-variation-settings: 'FILL' 1; }
+
     </style>
 </head>
 <body>
@@ -183,53 +324,129 @@
 
     <canvas id="canvas-bg"></canvas>
 
-    <div class="m3-card">
-        <h1>макар</h1>
-        <p>здравствуйте</p>
+    <div class="content-wrapper">
         
-        <div class="m3-wavy-container">
-            <svg class="m3-wavy-svg" viewBox="0 0 240 24" fill="none">
-                <path class="wavy-path" d="M 0 12 Q 10 2, 20 12 T 40 12 T 60 12 T 80 12 T 100 12 T 120 12 T 140 12 T 160 12 T 180 12 T 200 12 T 220 12 T 240 12" />
-            </svg>
-        </div>
+        <section id="home" class="page active">
+            <h1>макар</h1>
+            <p>здравствуйте</p>
+            
+            <div class="hellos-container">
+                <div>hello • salut • hola</div>
+                <div>ciao • нихао • konnichiwa</div>
+            </div>
+            
+            <div class="m3-wavy-container">
+                <svg class="m3-wavy-svg" viewBox="0 0 240 24" fill="none">
+                    <path class="wavy-path" d="M 0 12 Q 10 2, 20 12 T 40 12 T 60 12 T 80 12 T 100 12 T 120 12 T 140 12 T 160 12 T 180 12 T 200 12 T 220 12 T 240 12" />
+                </svg>
+            </div>
+        </section>
 
-        <a href="https://t.me/tgmakar" class="m3-button">telegram</a>
+        <section id="socials" class="page">
+            <h2>соцсети</h2>
+            <div class="social-list">
+                <a href="https://t.me/tgmakar" class="social-item">
+                    <div class="social-icon">
+                        <span class="material-symbols-rounded">send</span>
+                    </div>
+                    telegram
+                </a>
+            </div>
+        </section>
+
+        <section id="info" class="page">
+            <h2>инфо</h2>
+            <div class="info-stats">
+                <div class="stat-line">
+                    <span class="stat-label">версия</span>
+                    <span class="stat-value">2.1 stable</span>
+                </div>
+                <div class="stat-line">
+                    <span class="stat-label">визиты</span>
+                    <span class="stat-value" id="visit-count">64</span>
+                </div>
+            </div>
+            <div class="credit-badge">made by makar<br>material design 3</div>
+        </section>
+
     </div>
 
+    <nav class="m3-floating-nav">
+        <div class="nav-item active" onclick="showPage('home')">
+            <div class="nav-indicator"></div>
+            <span class="material-symbols-rounded">home</span>
+        </div>
+        <div class="nav-item" onclick="showPage('socials')">
+            <div class="nav-indicator"></div>
+            <span class="material-symbols-rounded">share</span>
+        </div>
+        <div class="nav-item" onclick="showPage('info')">
+            <div class="nav-indicator"></div>
+            <span class="material-symbols-rounded">info</span>
+        </div>
+    </nav>
+
     <script>
-        // --- ЛОГИКА РАНДОМИЗАЦИИ ФИГУР ЗАГРУЗКИ ---
-        const shapeEl = document.getElementById('morph-shape');
-        
-        // Каноничные формы Material 3 Shape
-        const m3Shapes = [
-            { radius: '50%', scale: 1 },         // Круг
-            { radius: '10px', scale: 0.9 },      // Мягкий квадрат
-            { radius: '20px 4px 20px 4px', scale: 1.05 }, // Лепесток
-            { radius: '4px 20px 4px 20px', scale: 0.95 }, // Обратный лепесток
-            { radius: '20px 20px 6px 6px', scale: 1 }     // Купол
-        ];
+        // --- НАВИГАЦИЯ МЕЖДУ СТРАНИЦАМИ ---
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
 
-        let currentRotation = Math.floor(Math.random() * 360); // Случайное начальное вращение
+            document.getElementById(pageId).classList.add('active');
 
-        function setRandomShape() {
-            // Выбираем случайную форму из списка
-            const nextShape = m3Shapes[Math.floor(Math.random() * m3Shapes.length)];
-            
-            // Добавляем случайный поворот от 45 до 135 градусов к текущему
-            currentRotation += Math.floor(Math.random() * 90) + 45; 
-
-            // Применяем стили напрямую через JS для мгновенного эффекта
-            shapeEl.style.borderRadius = nextShape.radius;
-            shapeEl.style.transform = `rotate(${currentRotation}deg) scale(${nextShape.scale})`;
+            const icons = { 'home': 0, 'socials': 1, 'info': 2 };
+            document.querySelectorAll('.nav-item')[icons[pageId]].classList.add('active');
         }
 
-        // Запускаем первую случайную фигуру сразу при загрузке страницы
-        setRandomShape();
+        // --- СЧЕТЧИК УНИКАЛЬНЫХ ПОСЕТИТЕЛЕЙ ---
+        function updateCounter() {
+            let hasVisited = localStorage.getItem('amakar_visited_unique');
+            let totalVisits = localStorage.getItem('amakar_visits_value');
 
-        // Меняем форму каждые 600мс (чуть быстрее, чтобы не надоедало)
+            if (!totalVisits) {
+                totalVisits = 64; 
+            } else {
+                totalVisits = parseInt(totalVisits);
+                if (totalVisits > 65) {
+                    totalVisits = 65;
+                    localStorage.setItem('amakar_visits_value', 65);
+                }
+            }
+
+            if (!hasVisited) {
+                totalVisits += 1;
+                localStorage.setItem('amakar_visited_unique', 'true');
+                localStorage.setItem('amakar_visits_value', totalVisits);
+            }
+
+            document.getElementById('visit-count').innerText = totalVisits;
+        }
+        updateCounter();
+
+        // --- ЛОГИКА РАНДОМИЗАЦИИ ФИГУР ЗАГРУЗКИ ---
+        const shapeEl = document.getElementById('morph-shape');
+        const m3Shapes = [
+            { radius: '50%', scale: 1 },
+            { radius: '10px', scale: 0.9 },
+            { radius: '20px 4px 20px 4px', scale: 1.05 },
+            { radius: '4px 20px 4px 20px', scale: 0.95 },
+            { radius: '20px 20px 6px 6px', scale: 1 }
+        ];
+
+        let currentRotation = Math.floor(Math.random() * 360);
+
+        function setRandomShape() {
+            const nextShape = m3Shapes[Math.floor(Math.random() * m3Shapes.length)];
+            currentRotation += Math.floor(Math.random() * 90) + 45; 
+            if(shapeEl) {
+                shapeEl.style.borderRadius = nextShape.radius;
+                shapeEl.style.transform = `rotate(${currentRotation}deg) scale(${nextShape.scale})`;
+            }
+        }
+
+        setRandomShape();
         const morphInterval = setInterval(setRandomShape, 600);
 
-        // Плавное закрытие сплеша через 2.5 секунды
         window.addEventListener('load', () => {
             setTimeout(() => {
                 clearInterval(morphInterval);
@@ -238,7 +455,7 @@
             }, 2500);
         });
 
-        // --- ЛЕТАЮЩИЙ ТЕКСТ НА ФОНЕ ---
+        // --- ПОЛНЫЙ МИКС СТАРОГО И НОВОГО ТЕКСТА НА ФОНЕ ---
         const canvas = document.getElementById('canvas-bg');
         const ctx = canvas.getContext('2d');
 
@@ -249,7 +466,15 @@
         window.addEventListener('resize', resize);
         resize();
 
-        const phrasesList = ["оооо телеграм", "оооо макар", "о да паша дуров храни телеграм"];
+        // Объединили все фразы вместе
+        const phrasesList = [
+            "оооо телеграм", 
+            "оооо макар", 
+            "о да паша дуров храни телеграм", 
+            "люблю екстераграм", 
+            "материал дизайн", 
+            "ыыыыыы"
+        ];
         const particles = [];
 
         class TextParticle {
@@ -285,7 +510,6 @@
             particles.forEach(p => { p.update(); p.draw(); });
             requestAnimationFrame(animate);
         }
-        
         requestAnimationFrame(animate);
     </script>
 </body>
