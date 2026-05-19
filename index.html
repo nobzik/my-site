@@ -60,6 +60,8 @@
             justify-content: center;
             align-items: center;
             transition: opacity 0.5s cubic-bezier(0.2, 0, 0, 1), visibility 0.5s;
+            opacity: 1;
+            visibility: visible;
         }
 
         #splash-screen.hidden {
@@ -387,38 +389,58 @@
     </nav>
 
     <script>
+        // --- Скрытие экрана загрузки (С гарантией работы) ---
+        function hideSplashScreen() {
+            const splash = document.getElementById('splash-screen');
+            if (splash && !splash.classList.contains('hidden')) {
+                splash.classList.add('hidden');
+                clearInterval(morphInterval); // Останавливаем морфинг для экономии ресурсов
+            }
+        }
+
+        // Запуск принудительного скрытия через 2.5 секунды в любом случае
+        setTimeout(hideSplashScreen, 2500);
+
+        // Если страница полностью загрузилась раньше — скрываем сразу
+        window.addEventListener('load', hideSplashScreen);
+
         // --- НАВИГАЦИЯ МЕЖДУ СТРАНИЦАМИ ---
         function showPage(pageId) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
 
-            document.getElementById(pageId).classList.add('active');
+            const targetPage = document.getElementById(pageId);
+            if (targetPage) targetPage.classList.add('active');
 
             const icons = { 'home': 0, 'socials': 1, 'info': 2 };
-            document.querySelectorAll('.nav-item')[icons[pageId]].classList.add('active');
+            const activeNav = document.querySelectorAll('.nav-item')[icons[pageId]];
+            if (activeNav) activeNav.classList.add('active');
         }
 
-        // --- ИСПРАВЛЕННЫЙ СЧЕТЧИК ПОСЕТИТЕЛЕЙ ---
+        // --- СЧЕТЧИК ПОСЕТИТЕЛЕЙ ---
         function updateCounter() {
-            let hasVisited = localStorage.getItem('amakar_visited_unique');
-            let totalVisits = localStorage.getItem('amakar_visits_value');
+            try {
+                let hasVisited = localStorage.getItem('amakar_visited_unique');
+                let totalVisits = localStorage.getItem('amakar_visits_value');
 
-            if (!totalVisits) {
-                // Если данных вообще нет, ставим базовое значение
-                totalVisits = 64;
-                localStorage.setItem('amakar_visits_value', totalVisits);
-            } else {
-                totalVisits = parseInt(totalVisits);
+                if (!totalVisits) {
+                    totalVisits = 64;
+                    localStorage.setItem('amakar_visits_value', totalVisits);
+                } else {
+                    totalVisits = parseInt(totalVisits);
+                }
+
+                if (!hasVisited) {
+                    totalVisits += 1;
+                    localStorage.setItem('amakar_visited_unique', 'true');
+                    localStorage.setItem('amakar_visits_value', totalVisits);
+                }
+
+                const countEl = document.getElementById('visit-count');
+                if (countEl) countEl.innerText = totalVisits;
+            } catch(e) {
+                console.log("LocalStorage заблокирован или не поддерживается");
             }
-
-            // Если пользователь зашел впервые, накручиваем +1
-            if (!hasVisited) {
-                totalVisits += 1;
-                localStorage.setItem('amakar_visited_unique', 'true');
-                localStorage.setItem('amakar_visits_value', totalVisits);
-            }
-
-            document.getElementById('visit-count').innerText = totalVisits;
         }
         updateCounter();
 
@@ -435,80 +457,73 @@
         let currentRotation = Math.floor(Math.random() * 360);
 
         function setRandomShape() {
+            if(!shapeEl) return;
             const nextShape = m3Shapes[Math.floor(Math.random() * m3Shapes.length)];
             currentRotation += Math.floor(Math.random() * 90) + 45; 
-            if(shapeEl) {
-                shapeEl.style.borderRadius = nextShape.radius;
-                shapeEl.style.transform = `rotate(${currentRotation}deg) scale(${nextShape.scale})`;
-            }
+            shapeEl.style.borderRadius = nextShape.radius;
+            shapeEl.style.transform = `rotate(${currentRotation}deg) scale(${nextShape.scale})`;
         }
 
         setRandomShape();
         const morphInterval = setInterval(setRandomShape, 600);
 
-        window.addEventListener('load', () => {
-            setTimeout(() => {
-                clearInterval(morphInterval);
-                const splash = document.getElementById('splash-screen');
-                if (splash) splash.classList.add('hidden');
-            }, 2500);
-        });
-
         // --- ТЕКСТ НА ФОНЕ ---
         const canvas = document.getElementById('canvas-bg');
-        const ctx = canvas.getContext('2d');
+        if (canvas) {
+            const ctx = canvas.getContext('2d');
 
-        function resize() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        }
-        window.addEventListener('resize', resize);
-        resize();
-
-        const phrasesList = [
-            "оооо телеграм", 
-            "оооо макар", 
-            "о да паша дуров храни телеграм", 
-            "люблю екстераграм", 
-            "материал дизайн", 
-            "ыыыыыы"
-        ];
-        const particles = [];
-
-        class TextParticle {
-            constructor() {
-                this.reset();
-                this.y = Math.random() * canvas.height;
+            function resize() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
             }
-            reset() {
-                this.text = phrasesList[Math.floor(Math.random() * phrasesList.length)];
-                this.x = Math.random() * canvas.width;
-                this.y = canvas.height + Math.random() * 40;
-                this.speed = 0.4 + Math.random() * 0.7;
-                this.fontSize = 14 + Math.random() * 14;
-                this.opacity = 0.07 + Math.random() * 0.13;
-                this.drift = (Math.random() - 0.5) * 0.2;
-            }
-            update() {
-                this.y -= this.speed;
-                this.x += this.drift;
-                if (this.y < -30) this.reset();
-            }
-            draw() {
-                ctx.fillStyle = `rgba(168, 199, 250, ${this.opacity})`;
-                ctx.font = `bold ${this.fontSize}px 'Google Sans', sans-serif`;
-                ctx.fillText(this.text, this.x, this.y);
-            }
-        }
+            window.addEventListener('resize', resize);
+            resize();
 
-        for (let i = 0; i < 22; i++) particles.push(new TextParticle());
+            const phrasesList = [
+                "оооо телеграм", 
+                "оооо макар", 
+                "о да паша дуров храни телеграм", 
+                "люблю екстераграм", 
+                "материал дизайн", 
+                "ыыыыыы"
+            ];
+            const particles = [];
 
-        function animate() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            particles.forEach(p => { p.update(); p.draw(); });
+            class TextParticle {
+                constructor() {
+                    this.reset();
+                    this.y = Math.random() * canvas.height;
+                }
+                reset() {
+                    this.text = phrasesList[Math.floor(Math.random() * phrasesList.length)];
+                    this.x = Math.random() * canvas.width;
+                    this.y = canvas.height + Math.random() * 40;
+                    this.speed = 0.4 + Math.random() * 0.7;
+                    this.fontSize = 14 + Math.random() * 14;
+                    this.opacity = 0.07 + Math.random() * 0.13;
+                    this.drift = (Math.random() - 0.5) * 0.2;
+                }
+                update() {
+                    this.y -= this.speed;
+                    this.x += this.drift;
+                    if (this.y < -30) this.reset();
+                }
+                draw() {
+                    ctx.fillStyle = `rgba(168, 199, 250, ${this.opacity})`;
+                    ctx.font = `bold ${this.fontSize}px 'Google Sans', sans-serif`;
+                    ctx.fillText(this.text, this.x, this.y);
+                }
+            }
+
+            for (let i = 0; i < 22; i++) particles.push(new TextParticle());
+
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                particles.forEach(p => { p.update(); p.draw(); });
+                requestAnimationFrame(animate);
+            }
             requestAnimationFrame(animate);
         }
-        requestAnimationFrame(animate);
     </script>
 </body>
 </html>
