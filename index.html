@@ -381,7 +381,7 @@
                     <span class="stat-value" id="visit-count">64</span>
                 </div>
             </div>
-            <div class="credit-badge">made by makar<br>material design 3</div>
+            <div class="credit-badge">material design 3</div>
         </section>
 
     </div>
@@ -428,10 +428,11 @@
             if (activeNav) activeNav.classList.add('active');
         }
 
-        // --- ЖИВОЙ СЧЕТЧИК ПОСЕТИТЕЛЕЙ (БЕЗ БЛОКИРОВКИ) ---
+        // --- УМНЫЙ СЧЕТЧИК ПОСЕТИТЕЛЕЙ (ЗАЩИТА ОТ F5) ---
         function updateCounter() {
             try {
                 let totalVisits = localStorage.getItem('amakar_visits_value');
+                let sessionVisited = sessionStorage.getItem('amakar_session_visited');
 
                 if (!totalVisits) {
                     totalVisits = 64; // Стартовая база
@@ -439,14 +440,17 @@
                     totalVisits = parseInt(totalVisits);
                 }
 
-                // Теперь счетчик гарантированно прибавляется при каждом обновлении
-                totalVisits += 1;
-                localStorage.setItem('amakar_visits_value', totalVisits);
+                // Считаем визит только если человек зашёл в новой сессии (вкладке), а не просто обновил страницу
+                if (!sessionVisited) {
+                    totalVisits += 1;
+                    localStorage.setItem('amakar_visits_value', totalVisits);
+                    sessionStorage.setItem('amakar_session_visited', 'true');
+                }
 
                 const countEl = document.getElementById('visit-count');
                 if (countEl) countEl.innerText = totalVisits;
             } catch(e) {
-                console.log("LocalStorage заблокирован");
+                console.log("Storage заблокирован");
             }
         }
         updateCounter();
