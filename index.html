@@ -5,6 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>amakar.tech</title>
     
+    <!-- Vercel Web Analytics -->
+    <script>
+        window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+    </script>
+    <script defer src="/_vercel/insights/script.js"></script>
+    
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0..1,0">
     
     <style>
@@ -472,7 +478,7 @@
         setRandomShape();
         const morphInterval = setInterval(setRandomShape, 600);
 
-        // --- ТЕКСТ НА ФОНЕ ---
+        // --- ТЕК��Т НА ФОНЕ ---
         const canvas = document.getElementById('canvas-bg');
         if (canvas) {
             const ctx = canvas.getContext('2d');
