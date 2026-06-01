@@ -318,7 +318,6 @@
 </head>
 <body>
 
-    <!-- ЭКРАН ЗАГРУЗКИ -->
     <div id="splash-screen">
         <div class="m3-loader-container">
             <div class="m3-expressive-shape" id="morph-shape"></div>
@@ -329,7 +328,6 @@
 
     <div class="content-wrapper">
         
-        <!-- ГЛАВНАЯ СТРАНИЦА -->
         <section id="home" class="page active">
             <h1>макар</h1>
             <p>здравствуйте</p>
@@ -346,11 +344,9 @@
             </div>
         </section>
 
-        <!-- СТРАНИЦА СОЦСЕТЕЙ -->
         <section id="socials" class="page">
             <h2>соцсети</h2>
             <div class="social-list">
-                <!-- Личный Telegram -->
                 <a href="https://t.me/tgmakar" target="_blank" class="social-item">
                     <div class="social-icon">
                         <span class="material-symbols-rounded">send</span>
@@ -358,7 +354,6 @@
                     telegram
                 </a>
                 
-                <!-- Telegram Канал -->
                 <a href="https://t.me/tgkmakar" target="_blank" class="social-item">
                     <div class="social-icon">
                         <span class="material-symbols-rounded">campaign</span>
@@ -368,7 +363,6 @@
             </div>
         </section>
 
-        <!-- СТРАНИЦА ИНФО -->
         <section id="info" class="page">
             <h2>инфо</h2>
             <div class="info-stats">
@@ -386,7 +380,6 @@
 
     </div>
 
-    <!-- ТАББАР -->
     <nav class="m3-floating-nav">
         <div class="nav-item active" onclick="showPage('home')">
             <div class="nav-indicator"></div>
@@ -401,6 +394,8 @@
             <span class="material-symbols-rounded">info</span>
         </div>
     </nav>
+
+    <script defer src="/_vercel/insights/script.js"></script>
 
     <script>
         // --- Скрытие экрана загрузки (С гарантией работы) ---
@@ -435,12 +430,11 @@
                 let sessionVisited = sessionStorage.getItem('amakar_session_visited');
 
                 if (!totalVisits) {
-                    totalVisits = 64; // Стартовая база
+                    totalVisits = 64; 
                 } else {
                     totalVisits = parseInt(totalVisits);
                 }
 
-                // Считаем визит только если человек зашёл в новой сессии (вкладке), а не просто обновил страницу
                 if (!sessionVisited) {
                     totalVisits += 1;
                     localStorage.setItem('amakar_visits_value', totalVisits);
