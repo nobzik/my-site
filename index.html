@@ -196,7 +196,7 @@
             100% { transform: translate3d(-40px, 0, 0); }
         }
 
-        /* --- МАТЕРИАЛ ДИЗАЙН 3 СОЦСЕТИ (ГОЛУБАЯ КНОПКА ТГ) --- */
+        /* --- МАТЕРИАЛ ДИЗАЙН 3 СОЦСЕТИ (ГОЛУБЫЕ КНОПКИ ТГ) --- */
         .social-list {
             display: flex;
             flex-direction: column;
@@ -318,6 +318,7 @@
 </head>
 <body>
 
+    <!-- ЭКРАН ЗАГРУЗКИ -->
     <div id="splash-screen">
         <div class="m3-loader-container">
             <div class="m3-expressive-shape" id="morph-shape"></div>
@@ -328,6 +329,7 @@
 
     <div class="content-wrapper">
         
+        <!-- ГЛАВНАЯ СТРАНИЦА -->
         <section id="home" class="page active">
             <h1>макар</h1>
             <p>здравствуйте</p>
@@ -344,24 +346,35 @@
             </div>
         </section>
 
+        <!-- СТРАНИЦА СОЦСЕТЕЙ -->
         <section id="socials" class="page">
             <h2>соцсети</h2>
             <div class="social-list">
-                <a href="https://t.me/tgmakar" class="social-item">
+                <!-- Личный Telegram -->
+                <a href="https://t.me/tgmakar" target="_blank" class="social-item">
                     <div class="social-icon">
                         <span class="material-symbols-rounded">send</span>
                     </div>
                     telegram
                 </a>
+                
+                <!-- Telegram Канал -->
+                <a href="https://t.me/твой_канал" target="_blank" class="social-item">
+                    <div class="social-icon">
+                        <span class="material-symbols-rounded">campaign</span>
+                    </div>
+                    тг канал
+                </a>
             </div>
         </section>
 
+        <!-- СТРАНИЦА ИНФО -->
         <section id="info" class="page">
             <h2>инфо</h2>
             <div class="info-stats">
                 <div class="stat-line">
                     <span class="stat-label">версия</span>
-                    <span class="stat-value">2.1 stable</span>
+                    <span class="stat-value">2.2 stable</span>
                 </div>
                 <div class="stat-line">
                     <span class="stat-label">визиты</span>
@@ -373,6 +386,7 @@
 
     </div>
 
+    <!-- ТАББАР -->
     <nav class="m3-floating-nav">
         <div class="nav-item active" onclick="showPage('home')">
             <div class="nav-indicator"></div>
@@ -394,14 +408,11 @@
             const splash = document.getElementById('splash-screen');
             if (splash && !splash.classList.contains('hidden')) {
                 splash.classList.add('hidden');
-                clearInterval(morphInterval); // Останавливаем морфинг для экономии ресурсов
+                clearInterval(morphInterval); 
             }
         }
 
-        // Запуск принудительного скрытия через 2.5 секунды в любом случае
         setTimeout(hideSplashScreen, 2500);
-
-        // Если страница полностью загрузилась раньше — скрываем сразу
         window.addEventListener('load', hideSplashScreen);
 
         // --- НАВИГАЦИЯ МЕЖДУ СТРАНИЦАМИ ---
@@ -417,29 +428,25 @@
             if (activeNav) activeNav.classList.add('active');
         }
 
-        // --- СЧЕТЧИК ПОСЕТИТЕЛЕЙ ---
+        // --- ЖИВОЙ СЧЕТЧИК ПОСЕТИТЕЛЕЙ (БЕЗ БЛОКИРОВКИ) ---
         function updateCounter() {
             try {
-                let hasVisited = localStorage.getItem('amakar_visited_unique');
                 let totalVisits = localStorage.getItem('amakar_visits_value');
 
                 if (!totalVisits) {
-                    totalVisits = 64;
-                    localStorage.setItem('amakar_visits_value', totalVisits);
+                    totalVisits = 64; // Стартовая база
                 } else {
                     totalVisits = parseInt(totalVisits);
                 }
 
-                if (!hasVisited) {
-                    totalVisits += 1;
-                    localStorage.setItem('amakar_visited_unique', 'true');
-                    localStorage.setItem('amakar_visits_value', totalVisits);
-                }
+                // Теперь счетчик гарантированно прибавляется при каждом обновлении
+                totalVisits += 1;
+                localStorage.setItem('amakar_visits_value', totalVisits);
 
                 const countEl = document.getElementById('visit-count');
                 if (countEl) countEl.innerText = totalVisits;
             } catch(e) {
-                console.log("LocalStorage заблокирован или не поддерживается");
+                console.log("LocalStorage заблокирован");
             }
         }
         updateCounter();
