@@ -19,6 +19,7 @@
         :root {
             --md-bg: #0a0c10;
             --md-surface: rgba(26, 28, 34, 0.75);
+            --md-surface-variant: rgba(230, 225, 233, 0.08);
             --md-secondary-container: #334458;
             --md-on-secondary-container: #d3e3fd;
             --md-primary: #a8c7fa;        
@@ -112,12 +113,12 @@
         .page {
             position: absolute;
             width: 85%;
-            max-width: 330px;
+            max-width: 340px;
             background-color: var(--md-surface);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
             border-radius: 28px;
-            padding: 40px 24px;
+            padding: 32px 20px;
             text-align: center;
             box-shadow: 0px 8px 32px rgba(0, 0, 0, 0.5);
             border: 1px solid rgba(255, 255, 255, 0.08);
@@ -130,7 +131,11 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            max-height: 70vh;
+            overflow-y: auto;
         }
+
+        .page::-webkit-scrollbar { width: 0; background: transparent; }
 
         .page.active {
             opacity: 1;
@@ -148,7 +153,7 @@
         h2 {
             font-size: 1.4rem;
             color: var(--md-primary);
-            margin: 0 0 24px 0;
+            margin: 0 0 20px 0;
             letter-spacing: 0.5px;
         }
         
@@ -196,7 +201,7 @@
             100% { transform: translate3d(-40px, 0, 0); }
         }
 
-        /* --- МАТЕРИАЛ ДИЗАЙН 3 СОЦСЕТИ (ГОЛУБЫЕ КНОПКИ ТГ) --- */
+        /* --- МАТЕРИАЛ ДИЗАЙН 3 СОЦСЕТИ --- */
         .social-list {
             display: flex;
             flex-direction: column;
@@ -228,7 +233,7 @@
             background-color: rgba(36, 161, 222, 0.35); 
         }
 
-        .social-item .social-icon { 
+        .social-icon { 
             margin-right: 16px; 
             color: var(--tg-text-color); 
             font-size: 24px;
@@ -237,12 +242,66 @@
             justify-content: center;
         }
 
+        /* --- СТРАНИЦА APK ФАЙЛОВ (ПРИЛОЖЕНИЙ) --- */
+        .apk-list {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            width: 100%;
+        }
+
+        .apk-card {
+            background: var(--md-surface-variant);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 20px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            text-align: left;
+            width: 100%;
+        }
+
+        .apk-name {
+            color: var(--md-text);
+            font-size: 1.15rem;
+            margin-bottom: 4px;
+        }
+
+        .apk-meta {
+            color: var(--md-text-variant);
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-bottom: 14px;
+            display: flex;
+            gap: 8px;
+        }
+
+        .apk-download-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background: var(--md-primary);
+            color: var(--md-on-primary);
+            text-decoration: none;
+            width: 100%;
+            height: 40px;
+            border-radius: 20px;
+            font-size: 0.95rem;
+            transition: transform 0.1s, opacity 0.2s;
+        }
+
+        .apk-download-btn:active {
+            transform: scale(0.97);
+        }
+
         /* --- СТРАНИЦА ИНФО --- */
         .info-stats {
             background: rgba(0,0,0,0.2);
             border-radius: 20px;
             padding: 20px;
-            margin-bottom: 20px;
+            margin-bottom: 24px;
             text-align: left;
             width: 100%;
         }
@@ -251,7 +310,6 @@
             justify-content: space-between;
             font-size: 0.9rem;
         }
-        .stat-line:not(:last-child) { margin-bottom: 8px; }
         .stat-label { color: var(--md-text-variant); }
         .stat-value { color: var(--md-primary); }
 
@@ -275,7 +333,7 @@
             padding: 8px;
             border-radius: 100px;
             display: flex;
-            gap: 8px;
+            gap: 4px;
             box-shadow: 0 8px 32px rgba(0,0,0,0.4);
             border: 1px solid rgba(255,255,255,0.1);
             z-index: 1000;
@@ -283,7 +341,7 @@
 
         .nav-item {
             position: relative;
-            width: 64px;
+            width: 56px;
             height: 40px;
             display: flex;
             align-items: center;
@@ -318,6 +376,7 @@
 </head>
 <body>
 
+    <!-- ЭКРАН ЗАГРУЗКИ -->
     <div id="splash-screen">
         <div class="m3-loader-container">
             <div class="m3-expressive-shape" id="morph-shape"></div>
@@ -328,6 +387,7 @@
 
     <div class="content-wrapper">
         
+        <!-- ГЛАВНАЯ СТРАНИЦА -->
         <section id="home" class="page active">
             <h1>макар</h1>
             <p>здравствуйте</p>
@@ -344,9 +404,11 @@
             </div>
         </section>
 
+        <!-- СТРАНИЦА СОЦСЕТЕЙ -->
         <section id="socials" class="page">
             <h2>соцсети</h2>
             <div class="social-list">
+                <!-- Личный Telegram -->
                 <a href="https://t.me/tgmakar" target="_blank" class="social-item">
                     <div class="social-icon">
                         <span class="material-symbols-rounded">send</span>
@@ -354,6 +416,7 @@
                     telegram
                 </a>
                 
+                <!-- Telegram Канал -->
                 <a href="https://t.me/tgkmakar" target="_blank" class="social-item">
                     <div class="social-icon">
                         <span class="material-symbols-rounded">campaign</span>
@@ -363,16 +426,47 @@
             </div>
         </section>
 
+        <!-- СТРАНИЦА APK ФАЙЛОВ -->
+        <section id="apk" class="page">
+            <h2>приложения</h2>
+            <div class="apk-list">
+                <!-- Приложение 1: Dynamic Schedule -->
+                <div class="apk-card">
+                    <div class="apk-name">Dynamic Schedule</div>
+                    <div class="apk-meta">
+                        <span>v1.0 stable</span>
+                        <span>•</span>
+                        <span>apk</span>
+                    </div>
+                    <a href="dynamicschedule.apk" download class="apk-download-btn">
+                        <span class="material-symbols-rounded">download</span>
+                        скачать apk
+                    </a>
+                </div>
+
+                <!-- Приложение 2: mkrmsg -->
+                <div class="apk-card">
+                    <div class="apk-name">mkrmsg</div>
+                    <div class="apk-meta">
+                        <span>v1.0</span>
+                        <span>•</span>
+                        <span>скоро</span>
+                    </div>
+                    <a href="#" onclick="alert('Приложение еще в разработке!'); return false;" class="apk-download-btn" style="opacity: 0.6;">
+                        <span class="material-symbols-rounded">hourglass_empty</span>
+                        в разработке
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- СТРАНИЦА ИНФО -->
         <section id="info" class="page">
             <h2>инфо</h2>
             <div class="info-stats">
                 <div class="stat-line">
                     <span class="stat-label">версия</span>
-                    <span class="stat-value">2.2 stable</span>
-                </div>
-                <div class="stat-line">
-                    <span class="stat-label">визиты</span>
-                    <span class="stat-value" id="visit-count">64</span>
+                    <span class="stat-value">2.3 stable</span>
                 </div>
             </div>
             <div class="credit-badge">material design 3</div>
@@ -380,6 +474,7 @@
 
     </div>
 
+    <!-- ТАББАР -->
     <nav class="m3-floating-nav">
         <div class="nav-item active" onclick="showPage('home')">
             <div class="nav-indicator"></div>
@@ -389,16 +484,21 @@
             <div class="nav-indicator"></div>
             <span class="material-symbols-rounded">share</span>
         </div>
+        <div class="nav-item" onclick="showPage('apk')">
+            <div class="nav-indicator"></div>
+            <span class="material-symbols-rounded">android</span>
+        </div>
         <div class="nav-item" onclick="showPage('info')">
             <div class="nav-indicator"></div>
             <span class="material-symbols-rounded">info</span>
         </div>
     </nav>
 
+    <!-- Скрипт аналитики Vercel -->
     <script defer src="/_vercel/insights/script.js"></script>
 
     <script>
-        // --- Скрытие экрана загрузки (С гарантией работы) ---
+        // --- Скрытие экрана загрузки ---
         function hideSplashScreen() {
             const splash = document.getElementById('splash-screen');
             if (splash && !splash.classList.contains('hidden')) {
@@ -418,36 +518,10 @@
             const targetPage = document.getElementById(pageId);
             if (targetPage) targetPage.classList.add('active');
 
-            const icons = { 'home': 0, 'socials': 1, 'info': 2 };
+            const icons = { 'home': 0, 'socials': 1, 'apk': 2, 'info': 3 };
             const activeNav = document.querySelectorAll('.nav-item')[icons[pageId]];
             if (activeNav) activeNav.classList.add('active');
         }
-
-        // --- УМНЫЙ СЧЕТЧИК ПОСЕТИТЕЛЕЙ (ЗАЩИТА ОТ F5) ---
-        function updateCounter() {
-            try {
-                let totalVisits = localStorage.getItem('amakar_visits_value');
-                let sessionVisited = sessionStorage.getItem('amakar_session_visited');
-
-                if (!totalVisits) {
-                    totalVisits = 64; 
-                } else {
-                    totalVisits = parseInt(totalVisits);
-                }
-
-                if (!sessionVisited) {
-                    totalVisits += 1;
-                    localStorage.setItem('amakar_visits_value', totalVisits);
-                    sessionStorage.setItem('amakar_session_visited', 'true');
-                }
-
-                const countEl = document.getElementById('visit-count');
-                if (countEl) countEl.innerText = totalVisits;
-            } catch(e) {
-                console.log("Storage заблокирован");
-            }
-        }
-        updateCounter();
 
         // --- ЛОГИКА РАНДОМИЗАЦИИ ФИГУР ЗАГРУЗКИ ---
         const shapeEl = document.getElementById('morph-shape');
