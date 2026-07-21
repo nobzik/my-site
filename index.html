@@ -302,6 +302,7 @@
             border: none;
             border-radius: 16px;
             overflow: hidden;
+            background: transparent;
         }
 
         /* --- СТРАНИЦА ИНФО --- */
@@ -507,16 +508,19 @@
     <script defer src="/_vercel/insights/script.js"></script>
 
     <script>
-        // --- Скрытие экрана загрузки ---
+        // --- ЗАЩИЩЕННЫЙ ЭКРАН ЗАГРУЗКИ ---
+        let morphInterval = null;
+
         function hideSplashScreen() {
             const splash = document.getElementById('splash-screen');
             if (splash && !splash.classList.contains('hidden')) {
                 splash.classList.add('hidden');
-                clearInterval(morphInterval); 
+                if (morphInterval) clearInterval(morphInterval); 
             }
         }
 
-        setTimeout(hideSplashScreen, 2500);
+        // Страховка: принудительно убираем экран через 2 секунды в любом случае
+        setTimeout(hideSplashScreen, 2000);
         window.addEventListener('load', hideSplashScreen);
 
         // --- НАВИГАЦИЯ МЕЖДУ СТРАНИЦАМИ ---
@@ -552,8 +556,10 @@
             shapeEl.style.transform = `rotate(${currentRotation}deg) scale(${nextShape.scale})`;
         }
 
-        setRandomShape();
-        const morphInterval = setInterval(setRandomShape, 600);
+        if (shapeEl) {
+            setRandomShape();
+            morphInterval = setInterval(setRandomShape, 600);
+        }
 
         // --- ТЕКСТ НА ФОНЕ ---
         const canvas = document.getElementById('canvas-bg');
@@ -599,11 +605,4 @@
                 draw() {
                     ctx.fillStyle = `rgba(168, 199, 250, ${this.opacity})`;
                     ctx.font = `bold ${this.fontSize}px 'Google Sans', sans-serif`;
-                    ctx.fillText(this.text, this.x, this.y);
-                }
-            }
-
-            for (let i = 0; i < 22; i++) particles.push(new TextParticle());
-
-            function animate() {
-                
+            
