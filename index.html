@@ -296,12 +296,19 @@
             transform: scale(0.97);
         }
 
+        .rustore-container {
+            width: 100%;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
         .rustore-frame {
             width: 100%;
-            height: 80px;
+            height: 60px;
             border: none;
-            border-radius: 16px;
-            overflow: hidden;
+            border-radius: 12px;
             background: transparent;
         }
 
@@ -439,7 +446,7 @@
         <section id="apk" class="page">
             <h2>приложения</h2>
             <div class="apk-list">
-                <!-- Android версия (Официальная кнопка RuStore) -->
+                <!-- Android версия (Изолированный RuStore) -->
                 <div class="apk-card">
                     <div class="apk-name">Dynamic Schedule</div>
                     <div class="apk-meta">
@@ -447,11 +454,9 @@
                         <span>•</span>
                         <span>Android 15+</span>
                     </div>
-                    <iframe 
-                        src="https://www.rustore.ru/external/simple-selection/buttons?theme=coloredDark&orientation=default&stores=rustore%3Ahttps%3A%2F%2Fwww.rustore.ru%2Fcatalog%2Fapp%2Fcom.makar.dynamicschedule%3Futm_source%3Davailable_in_rustore%26utm_medium%3Dcom.makar.dynamicschedule%26rsm%3D1%26mt_link_id%3Diios36%26mt_sub1%3Dcom.makar.dynamicschedule" 
-                        frameborder="0" 
-                        class="rustore-frame">
-                    </iframe>
+                    <div class="rustore-container" id="rustore-slot">
+                        <!-- Виджет подгрузится кодом без лагов -->
+                    </div>
                 </div>
 
                 <!-- iOS версия (IPA) -->
@@ -508,19 +513,26 @@
     <script defer src="/_vercel/insights/script.js"></script>
 
     <script>
-        // --- ЗАЩИЩЕННЫЙ ЭКРАН ЗАГРУЗКИ ---
-        let morphInterval = null;
-
+        // --- Скрытие экрана загрузки с инъекцией RuStore ---
         function hideSplashScreen() {
             const splash = document.getElementById('splash-screen');
             if (splash && !splash.classList.contains('hidden')) {
                 splash.classList.add('hidden');
-                if (morphInterval) clearInterval(morphInterval); 
+                clearInterval(morphInterval); 
+                
+                // Безопасно вставляем RuStore iframe после прогрузки экрана
+                const slot = document.getElementById('rustore-slot');
+                if (slot && !slot.hasChildNodes()) {
+                    const iframe = document.createElement('iframe');
+                    iframe.src = "https://www.rustore.ru/external/simple-selection/buttons?theme=coloredDark&orientation=default&stores=rustore%3Ahttps%3A%2F%2Fwww.rustore.ru%2Fcatalog%2Fapp%2Fcom.makar.dynamicschedule%3Futm_source%3Davailable_in_rustore%26utm_medium%3Dcom.makar.dynamicschedule%26rsm%3D1%26mt_link_id%3Diios36%26mt_sub1%3Dcom.makar.dynamicschedule";
+                    iframe.className = 'rustore-frame';
+                    iframe.setAttribute('frameborder', '0');
+                    slot.appendChild(iframe);
+                }
             }
         }
 
-        // Страховка: принудительно убираем экран через 2 секунды в любом случае
-        setTimeout(hideSplashScreen, 2000);
+        setTimeout(hideSplashScreen, 2500);
         window.addEventListener('load', hideSplashScreen);
 
         // --- НАВИГАЦИЯ МЕЖДУ СТРАНИЦАМИ ---
@@ -556,10 +568,8 @@
             shapeEl.style.transform = `rotate(${currentRotation}deg) scale(${nextShape.scale})`;
         }
 
-        if (shapeEl) {
-            setRandomShape();
-            morphInterval = setInterval(setRandomShape, 600);
-        }
+        setRandomShape();
+        const morphInterval = setInterval(setRandomShape, 600);
 
         // --- ТЕКСТ НА ФОНЕ ---
         const canvas = document.getElementById('canvas-bg');
@@ -594,15 +604,4 @@
                     this.y = canvas.height + Math.random() * 40;
                     this.speed = 0.4 + Math.random() * 0.7;
                     this.fontSize = 14 + Math.random() * 14;
-                    this.opacity = 0.07 + Math.random() * 0.13;
-                    this.drift = (Math.random() - 0.5) * 0.2;
-                }
-                update() {
-                    this.y -= this.speed;
-                    this.x += this.drift;
-                    if (this.y < -30) this.reset();
-                }
-                draw() {
-                    ctx.fillStyle = `rgba(168, 199, 250, ${this.opacity})`;
-                    ctx.font = `bold ${this.fontSize}px 'Google Sans', sans-serif`;
-            
+                    this.opacit
