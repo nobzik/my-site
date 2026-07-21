@@ -27,7 +27,6 @@
             --md-text: #e2e2e9;
             --md-text-variant: #c4c6d0;
             
-            /* Фирменный голубой цвет Telegram для MD3 карточки */
             --tg-brand-color: rgba(36, 161, 222, 0.2); 
             --tg-text-color: #74c7ff;
         }
@@ -60,7 +59,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            transition: opacity 0.4s ease, visibility 0.4s ease;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
             opacity: 1;
             visibility: visible;
         }
@@ -163,7 +162,6 @@
             margin: 0 0 16px 0;
         }
 
-        /* --- КОНТЕЙНЕР ПРИВЕТСТВИЙ НА РАЗНЫХ ЯЗЫКАХ --- */
         .hellos-container {
             font-size: 1.05rem;
             color: var(--md-text-variant);
@@ -172,7 +170,6 @@
             opacity: 0.85;
         }
 
-        /* --- ТА САМАЯ ИДЕАЛЬНАЯ ВОЛНА --- */
         .m3-wavy-container {
             width: 200px; 
             height: 24px;
@@ -201,7 +198,6 @@
             100% { transform: translate3d(-40px, 0, 0); }
         }
 
-        /* --- МАТЕРИАЛ ДИЗАЙН 3 СОЦСЕТИ --- */
         .social-list {
             display: flex;
             flex-direction: column;
@@ -507,27 +503,16 @@
     <script defer src="/_vercel/insights/script.js"></script>
 
     <script>
-        // --- Железобетонное скрытие экрана загрузки ---
-        let splashHidden = false;
-        function hideSplashScreen() {
-            if (splashHidden) return;
-            splashHidden = true;
+        // Простейшее скрытие экрана загрузки
+        function hideSplash() {
             const splash = document.getElementById('splash-screen');
-            if (splash) {
-                splash.classList.add('hidden');
-                if (typeof morphInterval !== 'undefined') clearInterval(morphInterval);
-            }
+            if (splash) splash.classList.add('hidden');
         }
 
-        // Скрываем ровно через 1 секунду после загрузки DOM
-        document.addEventListener('DOMContentLoaded', () => {
-            setTimeout(hideSplashScreen, 1000);
-        });
+        window.addEventListener('load', hideSplash);
+        setTimeout(hideSplash, 1200);
 
-        // Защитный таймер (скрыть в любом случае через 1.5 сек)
-        setTimeout(hideSplashScreen, 1500);
-
-        // --- НАВИГАЦИЯ МЕЖДУ СТРАНИЦАМИ ---
+        // Навигация
         function showPage(pageId) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
@@ -540,69 +525,57 @@
             if (activeNav) activeNav.classList.add('active');
         }
 
-        // --- ЛОГИКА РАНДОМИЗАЦИИ ФИГУР ЗАГРУЗКИ ---
+        // Загрузочные фигуры
         const shapeEl = document.getElementById('morph-shape');
         const m3Shapes = [
             { radius: '50%', scale: 1 },
             { radius: '10px', scale: 0.9 },
-            { radius: '20px 4px 20px 4px', scale: 1.05 },
-            { radius: '4px 20px 4px 20px', scale: 0.95 },
-            { radius: '20px 20px 6px 6px', scale: 1 }
+            { radius: '20px 4px 20px 4px', scale: 1.05 }
         ];
-
-        let currentRotation = Math.floor(Math.random() * 360);
-
-        function setRandomShape() {
+        let currentRotation = 0;
+        setInterval(() => {
             if(!shapeEl) return;
             const nextShape = m3Shapes[Math.floor(Math.random() * m3Shapes.length)];
-            currentRotation += Math.floor(Math.random() * 90) + 45; 
+            currentRotation += 45; 
             shapeEl.style.borderRadius = nextShape.radius;
-            shapeEl.style.transform = `rotate(${currentRotation}deg) scale(${nextShape.scale})`;
-        }
+            shapeEl.style.transform = `rotate(${currentRotation}deg)`;
+        }, 600);
 
-        setRandomShape();
-        const morphInterval = setInterval(setRandomShape, 600);
-
-        // --- ТЕКСТ НА ФОНЕ ---
+        // Фон
         const canvas = document.getElementById('canvas-bg');
         if (canvas) {
             const ctx = canvas.getContext('2d');
-
-            function resize() {
-                canvas.width = window.innerWidth;
-                canvas.height = window.innerHeight;
-            }
+            function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
             window.addEventListener('resize', resize);
             resize();
 
-            const phrasesList = [
-                "оооо телеграм", 
-                "оооо макар", 
-                "о да паша дуров храни телеграм", 
-                "люблю екстераграм", 
-                "материал дизайн", 
-                "ыыыыыы"
-            ];
+            const phrasesList = ["оооо телеграм", "оооо макар", "материал дизайн"];
             const particles = [];
-
             class TextParticle {
-                constructor() {
-                    this.reset();
-                    this.y = Math.random() * canvas.height;
-                }
+                constructor() { this.reset(); this.y = Math.random() * canvas.height; }
                 reset() {
                     this.text = phrasesList[Math.floor(Math.random() * phrasesList.length)];
                     this.x = Math.random() * canvas.width;
-                    this.y = canvas.height + Math.random() * 40;
-                    this.speed = 0.4 + Math.random() * 0.7;
-                    this.fontSize = 14 + Math.random() * 14;
-                    this.opacity = 0.07 + Math.random() * 0.13;
-                    this.drift = (Math.random() - 0.5) * 0.2;
+                    this.y = canvas.height + 20;
+                    this.speed = 0.5 + Math.random() * 0.5;
+                    this.fontSize = 14 + Math.random() * 10;
+                    this.opacity = 0.1;
                 }
-                update() {
-                    this.y -= this.speed;
-                    this.x += this.drift;
-                    if (this.y < -30) this.reset();
-                }
+                update() { this.y -= this.speed; if (this.y < -20) this.reset(); }
                 draw() {
-                    ctx.fillStyle = `rgba(168, 199, 250, ${thi
+                    ctx.fillStyle = `rgba(168, 199, 250, ${this.opacity})`;
+                    ctx.font = `bold ${this.fontSize}px sans-serif`;
+                    ctx.fillText(this.text, this.x, this.y);
+                }
+            }
+            for (let i = 0; i < 15; i++) particles.push(new TextParticle());
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                particles.forEach(p => { p.update(); p.draw(); });
+                requestAnimationFrame(animate);
+            }
+            animate();
+        }
+    </script>
+</body>
+</html>
