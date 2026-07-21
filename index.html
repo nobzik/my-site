@@ -59,7 +59,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            transition: opacity 0.5s ease, visibility 0.5s ease;
+            transition: opacity 0.8s cubic-bezier(0.2, 0, 0, 1), visibility 0.8s cubic-bezier(0.2, 0, 0, 1);
             opacity: 1;
             visibility: visible;
         }
@@ -503,14 +503,16 @@
     <script defer src="/_vercel/insights/script.js"></script>
 
     <script>
-        // Простейшее скрытие экрана загрузки
+        // Скрытие экрана загрузки ровно через 2.5 секунды
         function hideSplash() {
             const splash = document.getElementById('splash-screen');
-            if (splash) splash.classList.add('hidden');
+            if (splash && !splash.classList.contains('hidden')) {
+                splash.classList.add('hidden');
+                clearInterval(morphInterval);
+            }
         }
 
-        window.addEventListener('load', hideSplash);
-        setTimeout(hideSplash, 1200);
+        setTimeout(hideSplash, 2500);
 
         // Навигация
         function showPage(pageId) {
@@ -530,16 +532,18 @@
         const m3Shapes = [
             { radius: '50%', scale: 1 },
             { radius: '10px', scale: 0.9 },
-            { radius: '20px 4px 20px 4px', scale: 1.05 }
+            { radius: '20px 4px 20px 4px', scale: 1.05 },
+            { radius: '4px 20px 4px 20px', scale: 0.95 },
+            { radius: '20px 20px 6px 6px', scale: 1 }
         ];
         let currentRotation = 0;
-        setInterval(() => {
+        const morphInterval = setInterval(() => {
             if(!shapeEl) return;
             const nextShape = m3Shapes[Math.floor(Math.random() * m3Shapes.length)];
             currentRotation += 45; 
             shapeEl.style.borderRadius = nextShape.radius;
-            shapeEl.style.transform = `rotate(${currentRotation}deg)`;
-        }, 600);
+            shapeEl.style.transform = `rotate(${currentRotation}deg) scale(${nextShape.scale})`;
+        }, 500);
 
         // Фон
         const canvas = document.getElementById('canvas-bg');
