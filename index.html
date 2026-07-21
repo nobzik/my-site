@@ -290,6 +290,11 @@
             border-radius: 20px;
             font-size: 0.95rem;
             transition: transform 0.1s, opacity 0.2s;
+            margin-bottom: 8px; /* Отступ между кнопками в одной карточке */
+        }
+
+        .apk-download-btn:last-child {
+            margin-bottom: 0;
         }
 
         .apk-download-btn:active {
@@ -430,7 +435,7 @@
         <section id="apk" class="page">
             <h2>приложения</h2>
             <div class="apk-list">
-                <!-- Android версия (RuStore ссылка-кнопка) -->
+                <!-- Android версия (Две кнопки: APK + RuStore) -->
                 <div class="apk-card">
                     <div class="apk-name">Dynamic Schedule</div>
                     <div class="apk-meta">
@@ -438,6 +443,12 @@
                         <span>•</span>
                         <span>Android 15+</span>
                     </div>
+                    <!-- Кнопка скачивания APK -->
+                    <a href="dynamicschedule.apk" download class="apk-download-btn">
+                        <span class="material-symbols-rounded">download</span>
+                        скачать apk
+                    </a>
+                    <!-- Кнопка перехода в RuStore -->
                     <a href="https://www.rustore.ru/catalog/app/com.makar.dynamicschedule?utm_source=available_in_rustore&utm_medium=com.makar.dynamicschedule&rsm=1&mt_link_id=iios36&mt_sub1=com.makar.dynamicschedule" target="_blank" class="apk-download-btn">
                         <span class="material-symbols-rounded">open_in_new</span>
                         скачать в RuStore
@@ -590,19 +601,4 @@
                 draw() {
                     ctx.fillStyle = `rgba(168, 199, 250, ${this.opacity})`;
                     ctx.font = `bold ${this.fontSize}px 'Google Sans', sans-serif`;
-                    ctx.fillText(this.text, this.x, this.y);
-                }
-            }
-
-            for (let i = 0; i < 22; i++) particles.push(new TextParticle());
-
-            function animate() {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                particles.forEach(p => { p.update(); p.draw(); });
-                requestAnimationFrame(animate);
-            }
-            requestAnimationFrame(animate);
-        }
-    </script>
-</body>
-</html>
+           
