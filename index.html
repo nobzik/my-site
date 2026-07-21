@@ -60,7 +60,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            transition: opacity 0.5s cubic-bezier(0.2, 0, 0, 1), visibility 0.5s;
+            transition: opacity 0.4s ease, visibility 0.4s ease;
             opacity: 1;
             visibility: visible;
         }
@@ -290,7 +290,7 @@
             border-radius: 20px;
             font-size: 0.95rem;
             transition: transform 0.1s, opacity 0.2s;
-            margin-bottom: 8px; /* Отступ между кнопками в одной карточке */
+            margin-bottom: 8px;
         }
 
         .apk-download-btn:last-child {
@@ -435,7 +435,7 @@
         <section id="apk" class="page">
             <h2>приложения</h2>
             <div class="apk-list">
-                <!-- Android версия (Две кнопки: APK + RuStore) -->
+                <!-- Android версия -->
                 <div class="apk-card">
                     <div class="apk-name">Dynamic Schedule</div>
                     <div class="apk-meta">
@@ -443,19 +443,17 @@
                         <span>•</span>
                         <span>Android 15+</span>
                     </div>
-                    <!-- Кнопка скачивания APK -->
                     <a href="dynamicschedule.apk" download class="apk-download-btn">
                         <span class="material-symbols-rounded">download</span>
                         скачать apk
                     </a>
-                    <!-- Кнопка перехода в RuStore -->
                     <a href="https://www.rustore.ru/catalog/app/com.makar.dynamicschedule?utm_source=available_in_rustore&utm_medium=com.makar.dynamicschedule&rsm=1&mt_link_id=iios36&mt_sub1=com.makar.dynamicschedule" target="_blank" class="apk-download-btn">
                         <span class="material-symbols-rounded">open_in_new</span>
                         скачать в RuStore
                     </a>
                 </div>
 
-                <!-- iOS версия (IPA) -->
+                <!-- iOS версия -->
                 <div class="apk-card">
                     <div class="apk-name">Dynamic Schedule</div>
                     <div class="apk-meta">
@@ -509,17 +507,25 @@
     <script defer src="/_vercel/insights/script.js"></script>
 
     <script>
-        // --- Скрытие экрана загрузки ---
+        // --- Железобетонное скрытие экрана загрузки ---
+        let splashHidden = false;
         function hideSplashScreen() {
+            if (splashHidden) return;
+            splashHidden = true;
             const splash = document.getElementById('splash-screen');
-            if (splash && !splash.classList.contains('hidden')) {
+            if (splash) {
                 splash.classList.add('hidden');
-                clearInterval(morphInterval); 
+                if (typeof morphInterval !== 'undefined') clearInterval(morphInterval);
             }
         }
 
-        setTimeout(hideSplashScreen, 2000);
-        window.addEventListener('load', hideSplashScreen);
+        // Скрываем ровно через 1 секунду после загрузки DOM
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(hideSplashScreen, 1000);
+        });
+
+        // Защитный таймер (скрыть в любом случае через 1.5 сек)
+        setTimeout(hideSplashScreen, 1500);
 
         // --- НАВИГАЦИЯ МЕЖДУ СТРАНИЦАМИ ---
         function showPage(pageId) {
@@ -599,6 +605,4 @@
                     if (this.y < -30) this.reset();
                 }
                 draw() {
-                    ctx.fillStyle = `rgba(168, 199, 250, ${this.opacity})`;
-                    ctx.font = `bold ${this.fontSize}px 'Google Sans', sans-serif`;
-           
+                    ctx.fillStyle = `rgba(168, 199, 250, ${thi
