@@ -4,34 +4,31 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="theme-color" content="#0a0c10">
-    <title>макар — amakar.tech</title>
+    <title>макар</title>
 
     <!-- Шрифты Google Sans / Roboto и иконки Material Symbols Rounded -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@500;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,1,0" />
 
-    <!-- Vercel Analytics (не блокирует загрузку страницы) -->
+    <!-- Vercel Analytics -->
     <script defer src="/_vercel/insights/script.js"></script>
 
     <style>
         :root {
             --md-bg: #0a0c10;
             --md-surface: rgba(26, 28, 34, 0.75);
-            --md-surface-elevated: rgba(34, 37, 46, 0.85);
             --md-primary: #a8c7fa;
             --md-on-primary: #062e6f;
-            --md-primary-container: #0842a0;
-            --md-on-primary-container: #d3e3fd;
             --md-secondary-container: #334458;
             --md-on-secondary-container: #d7e3f7;
             --md-text: #e2e2e6;
-            --md-text-variant: #c4c6d0;
-            --md-outline: rgba(142, 145, 153, 0.2);
+            --md-text-variant: #8e9199;
             --tg-brand-color: rgba(36, 161, 222, 0.2);
             --tg-text-color: #64b5f6;
-            --m3-easing: cubic-bezier(0.2, 0, 0, 1);
+            --radius-xl: 28px;
+            --radius-lg: 20px;
         }
 
         * {
@@ -47,97 +44,94 @@
             height: 100%;
             background-color: var(--md-bg);
             color: var(--md-text);
-            font-family: 'Google Sans', 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-family: 'Google Sans', 'Roboto', sans-serif;
             overflow: hidden;
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
-        /* Экран загрузки (Splash Screen) с морфингом фигуры MD3 */
+        /* Экран загрузки MD3 */
         #splash-screen {
             position: fixed;
             inset: 0;
             background-color: var(--md-bg);
             z-index: 9999;
             display: flex;
-             flex-direction: column;
             align-items: center;
             justify-content: center;
-            transition: opacity 0.6s var(--m3-easing), visibility 0.6s var(--m3-easing);
-            /* CSS-страховка: даже если JS задержится, экран исчезнет сам */
-            animation: splashFallback 0.6s var(--m3-easing) 3.2s forwards;
+            transition: opacity 0.6s cubic-bezier(0.2, 0, 0, 1), visibility 0.6s cubic-bezier(0.2, 0, 0, 1);
         }
 
-        #splash-screen.fade-out {
+        #splash-screen.hidden {
             opacity: 0;
             visibility: hidden;
             pointer-events: none;
         }
 
-        @keyframes splashFallback {
-            to {
-                opacity: 0;
-                visibility: hidden;
-                pointer-events: none;
-            }
-        }
-
         .m3-loader-container {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: var(--md-surface);
+            box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.4);
             display: flex;
-            flex-direction: column;
             align-items: center;
-            gap: 24px;
+            justify-content: center;
+            border: 1px solid rgba(255, 255, 255, 0.06);
         }
 
-        #morph-shape.m3-expressive-shape {
-            width: 76px;
-            height: 76px;
-            background: var(--md-primary);
-            border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
-            transition: border-radius 0.55s var(--m3-easing), transform 0.55s var(--m3-easing), background-color 0.55s var(--m3-easing);
-            box-shadow: 0 0 40px rgba(168, 199, 250, 0.25);
+        .m3-expressive-shape {
+            width: 40px;
+            height: 40px;
+            background-color: var(--md-primary);
+            border-radius: 50%;
+            transition: all 0.45s cubic-bezier(0.2, 0, 0, 1);
         }
 
-        /* Анимированный фон с плавающими фразами */
+        /* Фоновый Canvas с плавающими фразами */
         #bg-canvas {
             position: fixed;
-            inset: 0;
+            top: 0;
+            left: 0;
             width: 100%;
             height: 100%;
             z-index: 0;
             pointer-events: none;
         }
 
-        /* Контейнер страниц */
+        /* Основной контейнер контента */
         .content-wrapper {
             position: relative;
             z-index: 2;
             width: 100%;
-            max-width: 440px;
+            max-width: 420px;
             padding: 20px 20px 110px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            max-height: 100dvh;
+            overflow-y: auto;
+            scrollbar-width: none;
+        }
+
+        .content-wrapper::-webkit-scrollbar {
+            display: none;
         }
 
         .page {
             display: none;
-            width: 100%;
             opacity: 0;
-            transform: translateY(12px) scale(0.98);
-            transition: opacity 0.35s var(--m3-easing), transform 0.35s var(--m3-easing);
+            transform: translateY(10px);
+            transition: opacity 0.3s cubic-bezier(0.2, 0, 0, 1), transform 0.3s cubic-bezier(0.2, 0, 0, 1);
         }
 
         .page.active {
             display: block;
-            animation: m3PageEnter 0.38s var(--m3-easing) forwards;
+            animation: pageFadeIn 0.35s cubic-bezier(0.2, 0, 0, 1) forwards;
         }
 
-        @keyframes m3PageEnter {
+        @keyframes pageFadeIn {
             from {
                 opacity: 0;
-                transform: translateY(14px) scale(0.97);
+                transform: translateY(12px) scale(0.98);
             }
             to {
                 opacity: 1;
@@ -145,44 +139,59 @@
             }
         }
 
-        /* Карточка Material Design 3 */
+        /* Основная карточка MD3 */
         .m3-card {
             background: var(--md-surface);
-            backdrop-filter: blur(22px);
-            -webkit-backdrop-filter: blur(22px);
-            border: 1px solid var(--md-outline);
-            border-radius: 28px;
-            padding: 32px 26px;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: var(--radius-xl);
+            padding: 32px 24px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.07);
             text-align: center;
-            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
         }
 
-        /* Главная вкладка (tab-home) */
-        .m3-card h1 {
-            font-size: 2.6rem;
+        h1 {
+            font-size: 2.5rem;
             font-weight: 700;
             color: var(--md-primary);
-            letter-spacing: -0.02em;
             margin-bottom: 6px;
-            text-transform: lowercase;
+            letter-spacing: -0.02em;
         }
 
-        .subtitle {
+        h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--md-primary);
+            margin-bottom: 20px;
+            letter-spacing: -0.01em;
+        }
+
+        .main-greeting {
             font-size: 1.15rem;
             font-weight: 500;
             color: var(--md-text);
-            margin-bottom: 18px;
+            margin-bottom: 16px;
         }
 
-        /* Бесшовная SVG-волна MD3 */
+        .hellos-container {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            font-size: 0.9rem;
+            color: var(--md-text-variant);
+            margin-bottom: 20px;
+        }
+
+        /* Бесшовная SVG-волна */
         .m3-wavy-container {
             width: 140px;
             height: 24px;
-            margin: 14px auto 20px;
+            margin: 0 auto;
             overflow: hidden;
             position: relative;
-            mask-image: linear-gradient(to right, transparent, black 18%, black 82%, transparent);
-            -webkit-mask-image: linear-gradient(to right, transparent, black 18%, black 82%, transparent);
+            mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
+            -webkit-mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
         }
 
         .wavy-svg {
@@ -203,24 +212,8 @@
             100% { transform: translate3d(-40px, 0, 0); }
         }
 
-        .greetings-box {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-            font-size: 0.92rem;
-            color: var(--md-text-variant);
-            letter-spacing: 0.03em;
-        }
-
-        /* Вкладка соцсетей (tab-socials) */
-        .section-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--md-text);
-            margin-bottom: 20px;
-        }
-
-        .socials-list {
+        /* Соцсети */
+        .social-list {
             display: flex;
             flex-direction: column;
             gap: 12px;
@@ -229,102 +222,98 @@
         .social-item {
             display: flex;
             align-items: center;
-            justify-content: space-between;
+            justify-content: center;
+            gap: 12px;
             padding: 16px 20px;
-            border-radius: 18px;
+            border-radius: 16px;
             background: var(--tg-brand-color);
-            border: 1px solid rgba(100, 181, 246, 0.25);
             color: var(--tg-text-color);
             text-decoration: none;
-            font-weight: 600;
-            font-size: 1.02rem;
-            transition: transform 0.2s var(--m3-easing), background-color 0.2s var(--m3-easing);
-        }
-
-        .social-item:hover {
-            background: rgba(36, 161, 222, 0.28);
-            transform: translateY(-2px);
+            font-weight: 700;
+            font-size: 1.05rem;
+            border: 1px solid rgba(100, 181, 246, 0.2);
+            transition: transform 0.2s cubic-bezier(0.2, 0, 0, 1), filter 0.2s;
         }
 
         .social-item:active {
             transform: scale(0.97);
         }
 
-        .social-left {
+        /* Приложения (tab-apk) */
+        .apk-list {
             display: flex;
-            align-items: center;
+            flex-direction: column;
             gap: 14px;
         }
 
-        .social-meta {
+        .apk-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            border-radius: var(--radius-lg);
+            padding: 18px;
             text-align: left;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            transition: border-color 0.3s cubic-bezier(0.2, 0, 0, 1), box-shadow 0.3s cubic-bezier(0.2, 0, 0, 1), background-color 0.3s cubic-bezier(0.2, 0, 0, 1);
         }
 
-        .social-meta span {
-            display: block;
-            font-size: 0.78rem;
-            color: var(--md-text-variant);
-            font-weight: 400;
-            margin-top: 2px;
+        /* Подсветка подходящей системы пользователя */
+        .apk-card.system-highlight {
+            background: rgba(168, 199, 250, 0.07);
+            border-color: var(--md-primary);
+            box-shadow: 0 0 24px rgba(168, 199, 250, 0.16);
         }
 
-        /* Вкладка Приложений (tab-apk) */
-        .apk-header {
+        .apk-header-row {
             display: flex;
             align-items: center;
-            justify-content: center;
-            gap: 12px;
-            margin-bottom: 8px;
+            justify-content: space-between;
+            gap: 8px;
         }
 
-        .apk-title {
-            font-size: 1.4rem;
+        .apk-name {
+            font-size: 1.15rem;
             font-weight: 700;
             color: var(--md-text);
         }
 
-        .version-chip {
-            display: inline-block;
-            padding: 4px 12px;
+        .system-badge {
+            display: none;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 10px;
             border-radius: 999px;
-            background: var(--md-secondary-container);
-            color: var(--md-on-secondary-container);
-            font-size: 0.78rem;
-            font-weight: 600;
-            margin-bottom: 14px;
+            background: rgba(168, 199, 250, 0.18);
+            color: var(--md-primary);
+            font-size: 0.72rem;
+            font-weight: 700;
         }
 
-        .apk-desc {
-            font-size: 0.9rem;
+        .apk-card.system-highlight .system-badge {
+            display: inline-flex;
+        }
+
+        .apk-meta {
+            font-size: 0.85rem;
             color: var(--md-text-variant);
-            line-height: 1.5;
-            margin-bottom: 22px;
+            margin-bottom: 4px;
         }
 
-        .apk-buttons {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .m3-btn {
+        .apk-download-btn {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
-            width: 100%;
-            padding: 14px 20px;
-            border-radius: 999px;
-            font-family: inherit;
-            font-size: 0.95rem;
-            font-weight: 600;
+            gap: 8px;
+            padding: 13px 18px;
+            border-radius: var(--radius-lg);
             text-decoration: none;
-            transition: transform 0.18s var(--m3-easing), filter 0.2s;
-            cursor: pointer;
-            border: none;
+            font-weight: 700;
+            font-size: 0.92rem;
+            transition: transform 0.2s cubic-bezier(0.2, 0, 0, 1), filter 0.2s;
         }
 
-        .m3-btn:active {
+        .apk-download-btn:active {
             transform: scale(0.97);
         }
 
@@ -338,77 +327,75 @@
             color: var(--md-on-secondary-container);
         }
 
-        .m3-btn-outline {
-            background: rgba(255, 255, 255, 0.04);
-            color: var(--md-text);
-            border: 1px solid var(--md-outline);
-        }
-
-        /* Вкладка Инфо (tab-info) */
-        .info-grid {
+        /* Инфо (tab-info) */
+        .info-stats {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            border-radius: var(--radius-lg);
+            padding: 16px 20px;
             display: flex;
             flex-direction: column;
             gap: 12px;
-            margin-top: 8px;
+            margin-bottom: 16px;
         }
 
-        .info-row {
+        .stat-line {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 14px 18px;
-            border-radius: 18px;
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid var(--md-outline);
-        }
-
-        .info-label {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            color: var(--md-text-variant);
-            font-size: 0.92rem;
-        }
-
-        .info-val {
-            font-weight: 700;
-            color: var(--md-primary);
             font-size: 0.95rem;
         }
 
-        /* Плавающая нижняя навигация Material Design 3 */
+        .stat-label {
+            color: var(--md-text-variant);
+        }
+
+        .stat-value {
+            font-weight: 700;
+            color: var(--md-primary);
+        }
+
+        .credit-badge {
+            display: inline-block;
+            padding: 6px 14px;
+            border-radius: 999px;
+            background: rgba(168, 199, 250, 0.1);
+            color: var(--md-primary);
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+
+        /* Нижняя плавающая навигация MD3 */
         .m3-floating-nav {
             position: fixed;
             bottom: max(20px, env(safe-area-inset-bottom, 20px));
             left: 50%;
             transform: translateX(-50%);
             z-index: 100;
-            background: var(--md-surface-elevated);
-            backdrop-filter: blur(24px);
-            -webkit-backdrop-filter: blur(24px);
-            border: 1px solid var(--md-outline);
+            background: var(--md-surface);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
             border-radius: 999px;
             padding: 8px 12px;
             display: flex;
             align-items: center;
             gap: 6px;
-            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.55);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
         }
 
         .nav-item {
-            background: transparent;
+            background: none;
             border: none;
             color: var(--md-text-variant);
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
             gap: 4px;
-            padding: 6px 14px;
-            border-radius: 999px;
+            padding: 4px 10px;
             cursor: pointer;
             font-family: inherit;
-            transition: color 0.25s var(--m3-easing);
+            transition: color 0.25s cubic-bezier(0.2, 0, 0, 1);
         }
 
         .nav-indicator {
@@ -418,7 +405,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: background-color 0.25s var(--m3-easing), transform 0.25s var(--m3-easing);
+            transition: background-color 0.25s cubic-bezier(0.2, 0, 0, 1);
         }
 
         .nav-item.active {
@@ -430,178 +417,283 @@
             color: var(--md-primary);
         }
 
-        .nav-label {
+        .nav-item span:last-child {
             font-size: 0.72rem;
             font-weight: 500;
         }
 
-        @media (max-width: 400px) {
-            .nav-item { padding: 6px 8px; }
+        @media (max-width: 380px) {
+            .nav-item { padding: 4px 6px; }
             .nav-indicator { width: 48px; }
         }
     </style>
 </head>
 <body>
 
-    <!-- Экран загрузки с морфирующей фигурой MD3 -->
+    <!-- Экран загрузки MD3 -->
     <div id="splash-screen">
         <div class="m3-loader-container">
             <div id="morph-shape" class="m3-expressive-shape"></div>
         </div>
     </div>
 
-    <!-- Фоновый Canvas с летающими фразами -->
+    <!-- Анимированный фон -->
     <canvas id="bg-canvas"></canvas>
 
-    <!-- Контент сайта -->
-    <main class="content-wrapper">
+    <!-- Контент -->
+    <div class="content-wrapper">
 
-        <!-- 1. ГЛАВНАЯ -->
+        <!-- ВКЛАДКА 1: ГЛАВНАЯ -->
         <section id="tab-home" class="page active">
             <div class="m3-card">
                 <h1>макар</h1>
-                <p class="subtitle">здравствуйте</p>
+                <p class="main-greeting">здравствуйте</p>
+
+                <div class="hellos-container">
+                    <div>hello • salut • hola</div>
+                    <div>ciao • нихао • konnichiwa</div>
+                </div>
 
                 <div class="m3-wavy-container">
                     <svg class="wavy-svg" viewBox="0 0 240 24">
                         <path class="wavy-path" d="M 0 12 Q 10 2, 20 12 T 40 12 T 60 12 T 80 12 T 100 12 T 120 12 T 140 12 T 160 12 T 180 12 T 200 12 T 220 12 T 240 12" />
                     </svg>
                 </div>
-
-                <div class="greetings-box">
-                    <div>hello • salut • hola</div>
-                    <div>ciao • нихао • konnichiwa</div>
-                </div>
             </div>
         </section>
 
-        <!-- 2. СОЦСЕТИ (ТГК убран, остался только личный Telegram) -->
+        <!-- ВКЛАДКА 2: СОЦСЕТИ (Только личный Telegram, ТГК удалён) -->
         <section id="tab-socials" class="page">
             <div class="m3-card">
-                <h2 class="section-title">соцсети</h2>
-                <div class="socials-list">
+                <h2>соцсети</h2>
+                <div class="social-list">
                     <a href="https://t.me/tgmakar" target="_blank" rel="noopener noreferrer" class="social-item">
-                        <div class="social-left">
-                            <span class="material-symbols-rounded">send</span>
-                            <div class="social-meta">
-                                личный телеграм
-                                <span>@tgmakar</span>
-                            </div>
-                        </div>
-                        <span class="material-symbols-rounded">arrow_outward</span>
+                        <span class="material-symbols-rounded">send</span>
+                        <span>telegram</span>
                     </a>
                 </div>
             </div>
         </section>
 
-        <!-- 3. ПРИЛОЖЕНИЯ (APK / RuStore / IPA) -->
+        <!-- ВКЛАДКА 3: ПРИЛОЖЕНИЯ (С автоподсветкой системы пользователя) -->
         <section id="tab-apk" class="page">
             <div class="m3-card">
-                <div class="apk-header">
-                    <span class="material-symbols-rounded" style="color: var(--md-primary); font-size: 28px;">calendar_month</span>
-                    <h2 class="apk-title">Dynamic Schedule</h2>
-                </div>
-                <div class="version-chip">v1.0 stable</div>
-                <p class="apk-desc">
-                    Удобное динамическое расписание в стиле Material Design 3 (`com.makar.dynamicschedule`).
-                </p>
+                <h2>приложения</h2>
+                <div class="apk-list">
 
-                <div class="apk-buttons">
-                    <a href="dynamicschedule.apk" download class="m3-btn m3-btn-primary">
-                        <span class="material-symbols-rounded">android</span>
-                        Скачать APK
-                    </a>
-                    <a href="https://www.rustore.ru/catalog/app/com.makar.dynamicschedule" target="_blank" rel="noopener noreferrer" class="m3-btn m3-btn-tonal">
-                        <span class="material-symbols-rounded">storefront</span>
-                        Открыть в RuStore
-                    </a>
-                    <a href="dynamicschedule.ipa" download class="m3-btn m3-btn-outline">
-                        <span class="material-symbols-rounded">phone_iphone</span>
-                        Скачать IPA (iOS)
-                    </a>
+                    <!-- Карточка Android -->
+                    <div id="card-android" class="apk-card">
+                        <div class="apk-header-row">
+                            <div class="apk-name">Dynamic Schedule</div>
+                            <span class="system-badge">ваша система</span>
+                        </div>
+                        <div class="apk-meta">v1.0 stable • Android 15+</div>
+                        <a href="dynamicschedule.apk" download class="apk-download-btn m3-btn-primary">
+                            <span class="material-symbols-rounded">download</span>
+                            <span>скачать apk</span>
+                        </a>
+                        <a href="https://www.rustore.ru/catalog/app/com.makar.dynamicschedule" target="_blank" rel="noopener noreferrer" class="apk-download-btn m3-btn-tonal">
+                            <span class="material-symbols-rounded">open_in_new</span>
+                            <span>скачать в rustore</span>
+                        </a>
+                    </div>
+
+                    <!-- Карточка iOS -->
+                    <div id="card-ios" class="apk-card">
+                        <div class="apk-header-row">
+                            <div class="apk-name">Dynamic Schedule</div>
+                            <span class="system-badge">ваша система</span>
+                        </div>
+                        <div class="apk-meta">v1.0 stable • iOS</div>
+                        <a href="dynamicschedule.ipa" download class="apk-download-btn m3-btn-primary">
+                            <span class="material-symbols-rounded">download</span>
+                            <span>скачать ipa</span>
+                        </a>
+                    </div>
+
                 </div>
             </div>
         </section>
 
-        <!-- 4. ИНФО -->
+        <!-- ВКЛАДКА 4: ИНФО -->
         <section id="tab-info" class="page">
             <div class="m3-card">
-                <h2 class="section-title">инфо</h2>
-                <div class="info-grid">
-                    <div class="info-row">
-                        <div class="info-label">
-                            <span class="material-symbols-rounded">deployed_code</span>
-                            версия сайта
-                        </div>
-                        <div class="info-val">2.3 stable</div>
+                <h2>инфо</h2>
+                <div class="info-stats">
+                    <div class="stat-line">
+                        <span class="stat-label">версия</span>
+                        <span class="stat-value">2.3 stable</span>
                     </div>
-                    <div class="info-row">
-                        <div class="info-label">
-                            <span class="material-symbols-rounded">visibility</span>
-                            посещений
-                        </div>
-                        <div class="info-val" id="visit-count">1</div>
-                    </div>
-                    <div class="info-row">
-                        <div class="info-label">
-                            <span class="material-symbols-rounded">palette</span>
-                            дизайн
-                        </div>
-                        <div class="info-val">Material You (MD3)</div>
+                    <div class="stat-line">
+                        <span class="stat-label">визиты</span>
+                        <span id="visit-count" class="stat-value">1</span>
                     </div>
                 </div>
+                <div class="credit-badge">material design 3</div>
             </div>
         </section>
 
-    </main>
+    </div>
 
-    <!-- Плавающая панель навигации MD3 -->
+    <!-- Нижняя панель навигации -->
     <nav class="m3-floating-nav">
         <button class="nav-item active" onclick="showPage('home', this)">
             <div class="nav-indicator">
                 <span class="material-symbols-rounded">home</span>
             </div>
-            <span class="nav-label">главная</span>
+            <span>главная</span>
         </button>
         <button class="nav-item" onclick="showPage('socials', this)">
             <div class="nav-indicator">
                 <span class="material-symbols-rounded">share</span>
             </div>
-            <span class="nav-label">соцсети</span>
+            <span>соцсети</span>
         </button>
         <button class="nav-item" onclick="showPage('apk', this)">
             <div class="nav-indicator">
                 <span class="material-symbols-rounded">android</span>
             </div>
-            <span class="nav-label">приложения</span>
+            <span>приложения</span>
         </button>
         <button class="nav-item" onclick="showPage('info', this)">
             <div class="nav-indicator">
                 <span class="material-symbols-rounded">info</span>
             </div>
-            <span class="nav-label">инфо</span>
+            <span>инфо</span>
         </button>
     </nav>
 
     <script>
-        // 1. Морфинг фигуры MD3 на экране загрузки и гарантированное скрытие
+        // 1. Лоадер с морфингом фигур MD3
         const m3Shapes = [
-            { radius: '30% 70% 70% 30% / 30% 30% 70% 70%', rotate: 45, scale: 1.05 },
-            { radius: '50% 50% 20% 80% / 25% 80% 20% 75%', rotate: 90, scale: 0.95 },
-            { radius: '67% 33% 47% 53% / 37% 20% 80% 63%', rotate: 180, scale: 1.08 },
-            { radius: '25% 75% 25% 75% / 75% 25% 75% 25%', rotate: 270, scale: 1.0 }
+            { radius: '50%', scale: 1.0 },
+            { radius: '10px', scale: 0.92 },
+            { radius: '20px 4px 20px 4px', scale: 1.05 },
+            { radius: '4px 20px 4px 20px', scale: 0.95 },
+            { radius: '20px 20px 6px 6px', scale: 1.02 }
         ];
 
-        const morphEl = document.getElementById('morph-shape');
-        let shapeIdx = 0;
+        const morphShape = document.getElementById('morph-shape');
+        let shapeIndex = 0;
+        let angle = 0;
 
-        const morphTimer = setInterval(() => {
-            if (!morphEl) return;
-            shapeIdx = (shapeIdx + 1) % m3Shapes.length;
-            const s = m3Shapes[shapeIdx];
-            morphEl.style.borderRadius = s.radius;
-            morphEl.style.transform = `rotate(${s.rotate}deg) scale(${s.scale})`;
-        }, 520);
+        const morphInterval = setInterval(() => {
+            if (!morphShape) return;
+            shapeIndex = (shapeIndex + 1) % m3Shapes.length;
+            angle += 45;
+            const current = m3Shapes[shapeIndex];
+            morphShape.style.borderRadius = current.radius;
+            morphShape.style.transform = `rotate(${angle}deg) scale(${current.scale})`;
+        }, 450);
 
-        function hideSplash() {
-            const splash = document.getElementById
+        function hideSplashScreen() {
+            const splash = document.getElementById('splash-screen');
+            if (splash && !splash.classList.contains('hidden')) {
+                splash.classList.add('hidden');
+                setTimeout(() => clearInterval(morphInterval), 600);
+            }
+        }
+
+        window.addEventListener('load', () => {
+            setTimeout(hideSplashScreen, 2000);
+        });
+        // Страховка на случай долгой подгрузки внешних шрифтов
+        setTimeout(hideSplashScreen, 2500);
+
+        // 2. Переключение вкладок
+        function showPage(pageId, btn) {
+            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+
+            const targetPage = document.getElementById('tab-' + pageId);
+            if (targetPage) targetPage.classList.add('active');
+            if (btn) btn.classList.add('active');
+        }
+
+        // 3. Автоматическая подсветка карточки под ОС пользователя
+        (function detectSystemHighlight() {
+            const ua = navigator.userAgent || navigator.vendor || window.opera;
+            const isIOS = /iPad|iPhone|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+            const isAndroid = /android/i.test(ua);
+
+            if (isAndroid) {
+                document.getElementById('card-android')?.classList.add('system-highlight');
+            } else if (isIOS) {
+                document.getElementById('card-ios')?.classList.add('system-highlight');
+            }
+        })();
+
+        // 4. Счётчик посещений (с защитой от накрутки через sessionStorage)
+        (function updateVisits() {
+            try {
+                let visits = parseInt(localStorage.getItem('amakar_visits') || '0', 10);
+                if (!sessionStorage.getItem('amakar_visited_session')) {
+                    visits++;
+                    localStorage.setItem('amakar_visits', visits.toString());
+                    sessionStorage.setItem('amakar_visited_session', 'true');
+                }
+                const visitEl = document.getElementById('visit-count');
+                if (visitEl) visitEl.textContent = visits;
+            } catch (e) {}
+        })();
+
+        // 5. Анимированный фон с плавающими фразами
+        (function initFloatingPhrases() {
+            const canvas = document.getElementById('bg-canvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+
+            const phrases = [
+                'оооо телеграм',
+                'оооо макар',
+                'о да паша дуров храни телеграм',
+                'люблю екстераграм',
+                'материал дизайн',
+                'ыыыыыы'
+            ];
+
+            let width = window.innerWidth;
+            let height = window.innerHeight;
+
+            function resizeCanvas() {
+                const dpr = window.devicePixelRatio || 1;
+                width = window.innerWidth;
+                height = window.innerHeight;
+                canvas.width = width * dpr;
+                canvas.height = height * dpr;
+                ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+            }
+
+            window.addEventListener('resize', resizeCanvas);
+            resizeCanvas();
+
+            const particles = Array.from({ length: 18 }, () => ({
+                text: phrases[Math.floor(Math.random() * phrases.length)],
+                x: Math.random() * width,
+                y: Math.random() * height,
+                speed: 0.4 + Math.random() * 0.6,
+                size: 13 + Math.random() * 5,
+                opacity: 0.05 + Math.random() * 0.08
+            }));
+
+            function render() {
+                ctx.clearRect(0, 0, width, height);
+                for (const p of particles) {
+                    p.y -= p.speed;
+                    if (p.y < -30) {
+                        p.y = height + 30;
+                        p.x = Math.random() * (width - 100);
+                        p.text = phrases[Math.floor(Math.random() * phrases.length)];
+                    }
+                    ctx.font = `700 ${p.size}px 'Google Sans', sans-serif`;
+                    ctx.fillStyle = `rgba(168, 199, 250, ${p.opacity})`;
+                    ctx.fillText(p.text, p.x, p.y);
+                }
+                requestAnimationFrame(render);
+            }
+
+            requestAnimationFrame(render);
+        })();
+    </script>
+</body>
+</html>
