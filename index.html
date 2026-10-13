@@ -2,41 +2,36 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="theme-color" content="#0a0c10">
-    <meta name="description" content="Makar — личный сайт, проекты и приложение Dynamic Schedule">
-    <title>amakar.tech</title>
+    <title>макар — amakar.tech</title>
 
-    <!-- Google Fonts: Onest & Material Symbols -->
+    <!-- Шрифты Google Sans / Roboto и иконки Material Symbols Rounded -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Onest:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,1,0" />
 
-    <!-- Vercel Web Analytics -->
+    <!-- Vercel Analytics (не блокирует загрузку страницы) -->
     <script defer src="/_vercel/insights/script.js"></script>
 
     <style>
         :root {
-            --bg-base: #0a0c10;
-            --surface-1: rgba(22, 25, 34, 0.72);
-            --surface-2: rgba(30, 35, 48, 0.85);
-            --surface-3: rgba(42, 49, 66, 0.9);
-            --primary: #a8c7fa;
-            --on-primary: #062e6f;
-            --primary-container: #0842a0;
-            --on-primary-container: #d3e3fd;
-            --secondary-container: #1e2a3a;
-            --on-secondary-container: #c2e7ff;
-            --text-main: #e3e3e8;
-            --text-muted: #8e9199;
-            --outline: rgba(142, 145, 153, 0.18);
-            --outline-hover: rgba(168, 199, 250, 0.4);
-            --radius-xl: 28px;
-            --radius-lg: 20px;
-            --radius-md: 16px;
-            --radius-pill: 999px;
-            --transition-m3: cubic-bezier(0.2, 0, 0, 1);
+            --md-bg: #0a0c10;
+            --md-surface: rgba(26, 28, 34, 0.75);
+            --md-surface-elevated: rgba(34, 37, 46, 0.85);
+            --md-primary: #a8c7fa;
+            --md-on-primary: #062e6f;
+            --md-primary-container: #0842a0;
+            --md-on-primary-container: #d3e3fd;
+            --md-secondary-container: #334458;
+            --md-on-secondary-container: #d7e3f7;
+            --md-text: #e2e2e6;
+            --md-text-variant: #c4c6d0;
+            --md-outline: rgba(142, 145, 153, 0.2);
+            --tg-brand-color: rgba(36, 161, 222, 0.2);
+            --tg-text-color: #64b5f6;
+            --m3-easing: cubic-bezier(0.2, 0, 0, 1);
         }
 
         * {
@@ -44,63 +39,67 @@
             margin: 0;
             padding: 0;
             -webkit-tap-highlight-color: transparent;
+            user-select: none;
         }
 
         html, body {
             width: 100%;
-            min-height: 100dvh;
-            background-color: var(--bg-base);
-            color: var(--text-main);
-            font-family: 'Onest', -apple-system, BlinkMacSystemFont, sans-serif;
-            overflow-x: hidden;
+            height: 100%;
+            background-color: var(--md-bg);
+            color: var(--md-text);
+            font-family: 'Google Sans', 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
+            overflow: hidden;
             display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        /* Экран загрузки с M3-морфингом */
-        #preloader {
-            position: fixed;
-            inset: 0;
-            background-color: var(--bg-base);
-            z-index: 9999;
-            display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 20px;
-            transition: opacity 0.5s var(--transition-m3), visibility 0.5s var(--transition-m3);
         }
 
-        #preloader.hidden {
+        /* Экран загрузки (Splash Screen) с морфингом фигуры MD3 */
+        #splash-screen {
+            position: fixed;
+            inset: 0;
+            background-color: var(--md-bg);
+            z-index: 9999;
+            display: flex;
+             flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.6s var(--m3-easing), visibility 0.6s var(--m3-easing);
+            /* CSS-страховка: даже если JS задержится, экран исчезнет сам */
+            animation: splashFallback 0.6s var(--m3-easing) 3.2s forwards;
+        }
+
+        #splash-screen.fade-out {
             opacity: 0;
             visibility: hidden;
             pointer-events: none;
         }
 
-        .m3-morph-loader {
-            width: 64px;
-            height: 64px;
-            background: linear-gradient(135deg, var(--primary), #7cacf8);
-            animation: m3Morph 2.2s infinite ease-in-out;
-            box-shadow: 0 0 36px rgba(168, 199, 250, 0.25);
+        @keyframes splashFallback {
+            to {
+                opacity: 0;
+                visibility: hidden;
+                pointer-events: none;
+            }
         }
 
-        .loader-text {
-            font-size: 0.9rem;
-            color: var(--text-muted);
-            letter-spacing: 0.08em;
-            font-family: 'JetBrains Mono', monospace;
+        .m3-loader-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 24px;
         }
 
-        @keyframes m3Morph {
-            0% { border-radius: 28% 72% 70% 30% / 30% 30% 70% 70%; transform: rotate(0deg) scale(1); }
-            33% { border-radius: 50% 50% 25% 75% / 65% 35% 65% 35%; transform: rotate(120deg) scale(1.08); }
-            66% { border-radius: 70% 30% 50% 50% / 35% 65% 35% 65%; transform: rotate(240deg) scale(0.95); }
-            100% { border-radius: 28% 72% 70% 30% / 30% 30% 70% 70%; transform: rotate(360deg) scale(1); }
+        #morph-shape.m3-expressive-shape {
+            width: 76px;
+            height: 76px;
+            background: var(--md-primary);
+            border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+            transition: border-radius 0.55s var(--m3-easing), transform 0.55s var(--m3-easing), background-color 0.55s var(--m3-easing);
+            box-shadow: 0 0 40px rgba(168, 199, 250, 0.25);
         }
 
-        /* Фоновый Canvas с плавающими фразами */
+        /* Анимированный фон с плавающими фразами */
         #bg-canvas {
             position: fixed;
             inset: 0;
@@ -110,112 +109,35 @@
             pointer-events: none;
         }
 
-        /* Мягкое фоновое свечение */
-        .ambient-glow {
-            position: fixed;
-            width: 420px;
-            height: 420px;
-            border-radius: 50%;
-            background: radial-gradient(circle, rgba(8, 66, 160, 0.22) 0%, rgba(10, 12, 16, 0) 70%);
-            top: 10%;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 0;
-            pointer-events: none;
-            filter: blur(40px);
-        }
-
-        /* Основной контейнер */
-        .app-container {
+        /* Контейнер страниц */
+        .content-wrapper {
             position: relative;
             z-index: 2;
             width: 100%;
-            max-width: 580px;
-            padding: 32px 20px 120px;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            flex: 1;
-        }
-
-        /* Верхняя шапка */
-        .top-bar {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 8px 4px;
-        }
-
-        .brand {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .brand-avatar {
-            width: 44px;
-            height: 44px;
-            border-radius: 16px;
-            background: linear-gradient(135deg, var(--primary-container), #1b3a6b);
-            border: 1px solid var(--outline-hover);
+            max-width: 440px;
+            padding: 20px 20px 110px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: 700;
-            font-size: 1.2rem;
-            color: var(--on-primary-container);
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
         }
 
-        .brand-title {
-            font-size: 1.15rem;
-            font-weight: 700;
-            letter-spacing: -0.02em;
-        }
-
-        .brand-subtitle {
-            font-size: 0.78rem;
-            color: var(--text-muted);
-            font-family: 'JetBrains Mono', monospace;
-        }
-
-        .status-chip {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 6px 14px;
-            border-radius: var(--radius-pill);
-            background: var(--surface-1);
-            border: 1px solid var(--outline);
-            backdrop-filter: blur(16px);
-            font-size: 0.78rem;
-            color: var(--on-secondary-container);
-        }
-
-        .status-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background-color: #4ade80;
-            box-shadow: 0 0 10px #4ade80;
-        }
-
-        /* Секции (вкладки) */
-        .tab-section {
+        .page {
             display: none;
-            flex-direction: column;
-            gap: 16px;
-            animation: sectionFadeIn 0.38s var(--transition-m3) forwards;
+            width: 100%;
+            opacity: 0;
+            transform: translateY(12px) scale(0.98);
+            transition: opacity 0.35s var(--m3-easing), transform 0.35s var(--m3-easing);
         }
 
-        .tab-section.active {
-            display: flex;
+        .page.active {
+            display: block;
+            animation: m3PageEnter 0.38s var(--m3-easing) forwards;
         }
 
-        @keyframes sectionFadeIn {
+        @keyframes m3PageEnter {
             from {
                 opacity: 0;
-                transform: translateY(14px) scale(0.985);
+                transform: translateY(14px) scale(0.97);
             }
             to {
                 opacity: 1;
@@ -223,451 +145,463 @@
             }
         }
 
-        /* M3 Карточки */
+        /* Карточка Material Design 3 */
         .m3-card {
-            background: var(--surface-1);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--outline);
-            border-radius: var(--radius-xl);
-            padding: 24px;
-            transition: transform 0.25s var(--transition-m3), border-color 0.25s var(--transition-m3), background-color 0.25s var(--transition-m3);
+            background: var(--md-surface);
+            backdrop-filter: blur(22px);
+            -webkit-backdrop-filter: blur(22px);
+            border: 1px solid var(--md-outline);
+            border-radius: 28px;
+            padding: 32px 26px;
+            text-align: center;
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
         }
 
-        .m3-card:hover {
-            border-color: var(--outline-hover);
-            background: var(--surface-2);
+        /* Главная вкладка (tab-home) */
+        .m3-card h1 {
+            font-size: 2.6rem;
+            font-weight: 700;
+            color: var(--md-primary);
+            letter-spacing: -0.02em;
+            margin-bottom: 6px;
+            text-transform: lowercase;
         }
 
-        .hero-card {
-            background: linear-gradient(155deg, rgba(8, 66, 160, 0.38) 0%, var(--surface-1) 65%);
-            position: relative;
+        .subtitle {
+            font-size: 1.15rem;
+            font-weight: 500;
+            color: var(--md-text);
+            margin-bottom: 18px;
+        }
+
+        /* Бесшовная SVG-волна MD3 */
+        .m3-wavy-container {
+            width: 140px;
+            height: 24px;
+            margin: 14px auto 20px;
             overflow: hidden;
+            position: relative;
+            mask-image: linear-gradient(to right, transparent, black 18%, black 82%, transparent);
+            -webkit-mask-image: linear-gradient(to right, transparent, black 18%, black 82%, transparent);
         }
 
-        .hero-badge {
-            display: inline-flex;
-            align-items: center;
+        .wavy-svg {
+            width: 240px;
+            height: 24px;
+            animation: m3-wavy-loop 1.8s linear infinite;
+        }
+
+        .wavy-path {
+            fill: none;
+            stroke: var(--md-primary);
+            stroke-width: 3;
+            stroke-linecap: round;
+        }
+
+        @keyframes m3-wavy-loop {
+            0% { transform: translate3d(0, 0, 0); }
+            100% { transform: translate3d(-40px, 0, 0); }
+        }
+
+        .greetings-box {
+            display: flex;
+            flex-direction: column;
             gap: 6px;
-            padding: 5px 12px;
-            border-radius: var(--radius-pill);
-            background: rgba(168, 199, 250, 0.14);
-            color: var(--primary);
+            font-size: 0.92rem;
+            color: var(--md-text-variant);
+            letter-spacing: 0.03em;
+        }
+
+        /* Вкладка соцсетей (tab-socials) */
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--md-text);
+            margin-bottom: 20px;
+        }
+
+        .socials-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .social-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 20px;
+            border-radius: 18px;
+            background: var(--tg-brand-color);
+            border: 1px solid rgba(100, 181, 246, 0.25);
+            color: var(--tg-text-color);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.02rem;
+            transition: transform 0.2s var(--m3-easing), background-color 0.2s var(--m3-easing);
+        }
+
+        .social-item:hover {
+            background: rgba(36, 161, 222, 0.28);
+            transform: translateY(-2px);
+        }
+
+        .social-item:active {
+            transform: scale(0.97);
+        }
+
+        .social-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .social-meta {
+            text-align: left;
+        }
+
+        .social-meta span {
+            display: block;
+            font-size: 0.78rem;
+            color: var(--md-text-variant);
+            font-weight: 400;
+            margin-top: 2px;
+        }
+
+        /* Вкладка Приложений (tab-apk) */
+        .apk-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+
+        .apk-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--md-text);
+        }
+
+        .version-chip {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 999px;
+            background: var(--md-secondary-container);
+            color: var(--md-on-secondary-container);
             font-size: 0.78rem;
             font-weight: 600;
             margin-bottom: 14px;
         }
 
-        .hero-title {
-            font-size: 1.75rem;
-            font-weight: 700;
-            line-height: 1.2;
-            letter-spacing: -0.025em;
-            margin-bottom: 10px;
-        }
-
-        .hero-desc {
-            color: var(--text-muted);
-            font-size: 0.95rem;
-            line-height: 1.55;
+        .apk-desc {
+            font-size: 0.9rem;
+            color: var(--md-text-variant);
+            line-height: 1.5;
             margin-bottom: 22px;
         }
 
-        .quick-actions {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
+        .apk-buttons {
+            display: flex;
+            flex-direction: column;
             gap: 10px;
         }
 
-        /* Кнопки Material Design 3 */
         .m3-btn {
-            position: relative;
-            overflow: hidden;
-            display: inline-flex;
+            display: flex;
             align-items: center;
             justify-content: center;
             gap: 10px;
+            width: 100%;
             padding: 14px 20px;
-            border-radius: var(--radius-pill);
+            border-radius: 999px;
             font-family: inherit;
-            font-size: 0.92rem;
+            font-size: 0.95rem;
             font-weight: 600;
             text-decoration: none;
+            transition: transform 0.18s var(--m3-easing), filter 0.2s;
             cursor: pointer;
             border: none;
-            transition: transform 0.18s var(--transition-m3), filter 0.2s, background-color 0.2s;
-            user-select: none;
         }
 
         .m3-btn:active {
             transform: scale(0.97);
         }
 
-        .m3-btn-filled {
-            background-color: var(--primary);
-            color: var(--on-primary);
-        }
-
-        .m3-btn-filled:hover {
-            filter: brightness(1.06);
+        .m3-btn-primary {
+            background: var(--md-primary);
+            color: var(--md-on-primary);
         }
 
         .m3-btn-tonal {
-            background-color: var(--secondary-container);
-            color: var(--on-secondary-container);
-            border: 1px solid rgba(194, 231, 255, 0.12);
-        }
-
-        .m3-btn-tonal:hover {
-            background-color: var(--surface-3);
+            background: var(--md-secondary-container);
+            color: var(--md-on-secondary-container);
         }
 
         .m3-btn-outline {
-            background-color: transparent;
-            color: var(--text-main);
-            border: 1px solid var(--outline);
+            background: rgba(255, 255, 255, 0.04);
+            color: var(--md-text);
+            border: 1px solid var(--md-outline);
         }
 
-        .m3-btn-outline:hover {
-            border-color: var(--primary);
-            background-color: rgba(168, 199, 250, 0.06);
-        }
-
-        .m3-btn.recommended {
-            box-shadow: 0 0 0 2px var(--primary), 0 8px 24px rgba(168, 199, 250, 0.2);
-        }
-
-        /* Карточка Приложения */
-        .app-header {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            margin-bottom: 16px;
-        }
-
-        .app-icon {
-            width: 60px;
-            height: 60px;
-            border-radius: 18px;
-            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #fff;
-            box-shadow: 0 8px 20px rgba(29, 78, 216, 0.35);
-            flex-shrink: 0;
-        }
-
-        .app-icon .material-symbols-rounded {
-            font-size: 32px;
-        }
-
-        .app-title-group h2 {
-            font-size: 1.25rem;
-            font-weight: 700;
-            margin-bottom: 4px;
-        }
-
-        .package-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.76rem;
-            color: var(--primary);
-            background: rgba(168, 199, 250, 0.1);
-            padding: 3px 10px;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-
-        .package-badge:hover {
-            background: rgba(168, 199, 250, 0.2);
-        }
-
-        .download-grid {
+        /* Вкладка Инфо (tab-info) */
+        .info-grid {
             display: flex;
             flex-direction: column;
-            gap: 10px;
-            margin-top: 18px;
+            gap: 12px;
+            margin-top: 8px;
         }
 
-        .download-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-        }
-
-        /* Контакты (Личный Telegram) */
-        .contact-card {
-            display: flex;
-            flex-direction: column;
-            gap: 18px;
-        }
-
-        .tg-profile {
+        .info-row {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 14px;
-            padding: 16px;
-            border-radius: var(--radius-lg);
-            background: rgba(10, 12, 16, 0.45);
-            border: 1px solid var(--outline);
+            padding: 14px 18px;
+            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--md-outline);
         }
 
-        .tg-info {
+        .info-label {
             display: flex;
             align-items: center;
-            gap: 14px;
+            gap: 10px;
+            color: var(--md-text-variant);
+            font-size: 0.92rem;
         }
 
-        .tg-icon-box {
-            width: 48px;
-            height: 48px;
-            border-radius: 14px;
-            background: rgba(42, 171, 238, 0.15);
-            color: #2aabee;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-        }
-
-        .tg-name {
-            font-weight: 600;
-            font-size: 1.05rem;
-        }
-
-        .tg-handle {
-            color: var(--text-muted);
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.85rem;
-        }
-
-        .icon-btn {
-            width: 42px;
-            height: 42px;
-            border-radius: 12px;
-            border: 1px solid var(--outline);
-            background: var(--surface-2);
-            color: var(--text-main);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.2s var(--transition-m3);
-        }
-
-        .icon-btn:hover {
-            border-color: var(--primary);
-            color: var(--primary);
-        }
-
-        /* Секция Инфо */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-        }
-
-        .stat-box {
-            padding: 18px;
-            border-radius: var(--radius-lg);
-            background: rgba(10, 12, 16, 0.45);
-            border: 1px solid var(--outline);
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-
-        .stat-label {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .stat-value {
-            font-size: 1.4rem;
+        .info-val {
             font-weight: 700;
-            font-family: 'JetBrains Mono', monospace;
-            color: var(--primary);
+            color: var(--md-primary);
+            font-size: 0.95rem;
         }
 
-        .tech-tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-top: 14px;
-        }
-
-        .tech-tag {
-            padding: 6px 12px;
-            border-radius: 10px;
-            background: var(--secondary-container);
-            color: var(--on-secondary-container);
-            font-size: 0.8rem;
-            font-weight: 500;
-        }
-
-        /* Навигационная панель M3 (Bottom Navigation Bar) */
-        .m3-nav-wrapper {
+        /* Плавающая нижняя навигация Material Design 3 */
+        .m3-floating-nav {
             position: fixed;
-            bottom: max(16px, env(safe-area-inset-bottom));
+            bottom: max(20px, env(safe-area-inset-bottom, 20px));
             left: 50%;
             transform: translateX(-50%);
             z-index: 100;
-            width: calc(100% - 32px);
-            max-width: 460px;
-        }
-
-        .m3-nav {
-            background: rgba(22, 25, 34, 0.88);
+            background: var(--md-surface-elevated);
             backdrop-filter: blur(24px);
             -webkit-backdrop-filter: blur(24px);
-            border: 1px solid var(--outline);
-            border-radius: var(--radius-pill);
-            padding: 6px;
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            box-shadow: 0 12px 36px rgba(0, 0, 0, 0.55);
+            border: 1px solid var(--md-outline);
+            border-radius: 999px;
+            padding: 8px 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.55);
         }
 
         .nav-item {
-            background: none;
+            background: transparent;
             border: none;
-            color: var(--text-muted);
-            padding: 8px 4px;
-            border-radius: var(--radius-pill);
+            color: var(--md-text-variant);
             display: flex;
             flex-direction: column;
             align-items: center;
+            justify-content: center;
             gap: 4px;
+            padding: 6px 14px;
+            border-radius: 999px;
             cursor: pointer;
             font-family: inherit;
-            transition: color 0.25s var(--transition-m3);
-            position: relative;
+            transition: color 0.25s var(--m3-easing);
         }
 
-        .nav-pill {
+        .nav-indicator {
             width: 56px;
-            height: 30px;
-            border-radius: var(--radius-pill);
+            height: 32px;
+            border-radius: 999px;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: background-color 0.25s var(--transition-m3), transform 0.25s var(--transition-m3);
+            transition: background-color 0.25s var(--m3-easing), transform 0.25s var(--m3-easing);
         }
 
         .nav-item.active {
-            color: var(--text-main);
+            color: var(--md-text);
         }
 
-        .nav-item.active .nav-pill {
-            background-color: var(--primary-container);
-            color: var(--on-primary-container);
+        .nav-item.active .nav-indicator {
+            background-color: var(--md-secondary-container);
+            color: var(--md-primary);
         }
 
         .nav-label {
             font-size: 0.72rem;
-            font-weight: 600;
+            font-weight: 500;
         }
 
-        /* Эффект волны (Ripple) */
-        .ripple {
-            position: absolute;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.25);
-            transform: scale(0);
-            animation: rippleAnim 0.55s linear;
-            pointer-events: none;
-        }
-
-        @keyframes rippleAnim {
-            to {
-                transform: scale(4);
-                opacity: 0;
-            }
-        }
-
-        /* M3 Уведомление (Snackbar) */
-        #snackbar {
-            position: fixed;
-            bottom: 96px;
-            left: 50%;
-            transform: translateX(-50%) translateY(20px);
-            background: var(--text-main);
-            color: var(--bg-base);
-            padding: 12px 20px;
-            border-radius: 14px;
-            font-size: 0.88rem;
-            font-weight: 600;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s var(--transition-m3);
-            z-index: 200;
-            white-space: nowrap;
-        }
-
-        #snackbar.show {
-            opacity: 1;
-            visibility: visible;
-            transform: translateX(-50%) translateY(0);
-        }
-
-        @media (max-width: 480px) {
-            .hero-title { font-size: 1.5rem; }
-            .quick-actions, .download-row { grid-template-columns: 1fr; }
+        @media (max-width: 400px) {
+            .nav-item { padding: 6px 8px; }
+            .nav-indicator { width: 48px; }
         }
     </style>
 </head>
 <body>
 
-    <!-- Экран загрузки -->
-    <div id="preloader">
-        <div class="m3-morph-loader"></div>
-        <div class="loader-text">amakar.tech</div>
+    <!-- Экран загрузки с морфирующей фигурой MD3 -->
+    <div id="splash-screen">
+        <div class="m3-loader-container">
+            <div id="morph-shape" class="m3-expressive-shape"></div>
+        </div>
     </div>
 
-    <!-- Анимированный фон с частицами фраз -->
+    <!-- Фоновый Canvas с летающими фразами -->
     <canvas id="bg-canvas"></canvas>
-    <div class="ambient-glow"></div>
 
-    <!-- Основной контент -->
-    <main class="app-container">
-        <header class="top-bar">
-            <div class="brand">
-                <div class="brand-avatar">M</div>
-                <div>
-                    <div class="brand-title">Makar</div>
-                    <div class="brand-subtitle">amakar.tech</div>
+    <!-- Контент сайта -->
+    <main class="content-wrapper">
+
+        <!-- 1. ГЛАВНАЯ -->
+        <section id="tab-home" class="page active">
+            <div class="m3-card">
+                <h1>макар</h1>
+                <p class="subtitle">здравствуйте</p>
+
+                <div class="m3-wavy-container">
+                    <svg class="wavy-svg" viewBox="0 0 240 24">
+                        <path class="wavy-path" d="M 0 12 Q 10 2, 20 12 T 40 12 T 60 12 T 80 12 T 100 12 T 120 12 T 140 12 T 160 12 T 180 12 T 200 12 T 220 12 T 240 12" />
+                    </svg>
+                </div>
+
+                <div class="greetings-box">
+                    <div>hello • salut • hola</div>
+                    <div>ciao • нихао • konnichiwa</div>
                 </div>
             </div>
-            <div class="status-chip">
-                <span class="status-dot"></span>
-                <span>Online</span>
-            </div>
-        </header>
+        </section>
 
-        <!-- ВКЛАДКА 1: ГЛАВНАЯ -->
-        <section id="tab-home" class="tab-section active">
-            <div class="m3-card hero-card">
-                <div class="hero-badge">
-                    <span class="material-symbols-rounded" style="font-size: 16px;">auto_awesome</span>
-                    Material Design 3
+        <!-- 2. СОЦСЕТИ (ТГК убран, остался только личный Telegram) -->
+        <section id="tab-socials" class="page">
+            <div class="m3-card">
+                <h2 class="section-title">соцсети</h2>
+                <div class="socials-list">
+                    <a href="https://t.me/tgmakar" target="_blank" rel="noopener noreferrer" class="social-item">
+                        <div class="social-left">
+                            <span class="material-symbols-rounded">send</span>
+                            <div class="social-meta">
+                                личный телеграм
+                                <span>@tgmakar</span>
+                            </div>
+                        </div>
+                        <span class="material-symbols-rounded">arrow_outward</span>
+                    </a>
                 </div>
-                <h1 class="hero-title">Привет, я Макар</h1>
-                <p class="hero-desc">
-                    Разрабатываю удобные мобильные приложения, кастомные интерфейсы и экспериментирую с железом и кодом.
+            </div>
+        </section>
+
+        <!-- 3. ПРИЛОЖЕНИЯ (APK / RuStore / IPA) -->
+        <section id="tab-apk" class="page">
+            <div class="m3-card">
+                <div class="apk-header">
+                    <span class="material-symbols-rounded" style="color: var(--md-primary); font-size: 28px;">calendar_month</span>
+                    <h2 class="apk-title">Dynamic Schedule</h2>
+                </div>
+                <div class="version-chip">v1.0 stable</div>
+                <p class="apk-desc">
+                    Удобное динамическое расписание в стиле Material Design 3 (`com.makar.dynamicschedule`).
                 </p>
-                <div class="quick-actions">
-                    <button class="m3-btn m3-btn-filled" onclick="switchTab('apps')">
-                        <span class="material-symbols-rounded">download</span>
-                        Dynamic Schedule
-                    </button>
-                    <button class="m3-btn m3-btn-tonal" onclick="switchTab('socials')">
-                   
+
+                <div class="apk-buttons">
+                    <a href="dynamicschedule.apk" download class="m3-btn m3-btn-primary">
+                        <span class="material-symbols-rounded">android</span>
+                        Скачать APK
+                    </a>
+                    <a href="https://www.rustore.ru/catalog/app/com.makar.dynamicschedule" target="_blank" rel="noopener noreferrer" class="m3-btn m3-btn-tonal">
+                        <span class="material-symbols-rounded">storefront</span>
+                        Открыть в RuStore
+                    </a>
+                    <a href="dynamicschedule.ipa" download class="m3-btn m3-btn-outline">
+                        <span class="material-symbols-rounded">phone_iphone</span>
+                        Скачать IPA (iOS)
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. ИНФО -->
+        <section id="tab-info" class="page">
+            <div class="m3-card">
+                <h2 class="section-title">инфо</h2>
+                <div class="info-grid">
+                    <div class="info-row">
+                        <div class="info-label">
+                            <span class="material-symbols-rounded">deployed_code</span>
+                            версия сайта
+                        </div>
+                        <div class="info-val">2.3 stable</div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-label">
+                            <span class="material-symbols-rounded">visibility</span>
+                            посещений
+                        </div>
+                        <div class="info-val" id="visit-count">1</div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-label">
+                            <span class="material-symbols-rounded">palette</span>
+                            дизайн
+                        </div>
+                        <div class="info-val">Material You (MD3)</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Плавающая панель навигации MD3 -->
+    <nav class="m3-floating-nav">
+        <button class="nav-item active" onclick="showPage('home', this)">
+            <div class="nav-indicator">
+                <span class="material-symbols-rounded">home</span>
+            </div>
+            <span class="nav-label">главная</span>
+        </button>
+        <button class="nav-item" onclick="showPage('socials', this)">
+            <div class="nav-indicator">
+                <span class="material-symbols-rounded">share</span>
+            </div>
+            <span class="nav-label">соцсети</span>
+        </button>
+        <button class="nav-item" onclick="showPage('apk', this)">
+            <div class="nav-indicator">
+                <span class="material-symbols-rounded">android</span>
+            </div>
+            <span class="nav-label">приложения</span>
+        </button>
+        <button class="nav-item" onclick="showPage('info', this)">
+            <div class="nav-indicator">
+                <span class="material-symbols-rounded">info</span>
+            </div>
+            <span class="nav-label">инфо</span>
+        </button>
+    </nav>
+
+    <script>
+        // 1. Морфинг фигуры MD3 на экране загрузки и гарантированное скрытие
+        const m3Shapes = [
+            { radius: '30% 70% 70% 30% / 30% 30% 70% 70%', rotate: 45, scale: 1.05 },
+            { radius: '50% 50% 20% 80% / 25% 80% 20% 75%', rotate: 90, scale: 0.95 },
+            { radius: '67% 33% 47% 53% / 37% 20% 80% 63%', rotate: 180, scale: 1.08 },
+            { radius: '25% 75% 25% 75% / 75% 25% 75% 25%', rotate: 270, scale: 1.0 }
+        ];
+
+        const morphEl = document.getElementById('morph-shape');
+        let shapeIdx = 0;
+
+        const morphTimer = setInterval(() => {
+            if (!morphEl) return;
+            shapeIdx = (shapeIdx + 1) % m3Shapes.length;
+            const s = m3Shapes[shapeIdx];
+            morphEl.style.borderRadius = s.radius;
+            morphEl.style.transform = `rotate(${s.rotate}deg) scale(${s.scale})`;
+        }, 520);
+
+        function hideSplash() {
+            const splash = document.getElementById
